@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-circuit-bg: #0a1120;
+  --color-circuit-panel: #0f1b2e;
+  --color-circuit-panel-2: #10233b;
+  --color-circuit-line: #1e2f47;
+  --color-circuit-copper: #c9814d;
+  --color-circuit-copper-dim: #8a5a37;
+  --color-circuit-led: #4ade80;
+  --color-circuit-led-dim: #1f5f3f;
+  --color-circuit-amber: #f2a93b;
+  --color-circuit-text: #e7ecf3;
+  --color-circuit-muted: #8ea0b8;
+
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-circuit-line);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-circuit-bg);
+    color: var(--color-circuit-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background-color: var(--color-circuit-led);
+    color: #06170f;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-circuit-led);
+    outline-offset: 3px;
+  }
+}
+
+@layer utilities {
+  /* Perforated breadboard-style dot grid background */
+  .grid-dots {
+    background-image: radial-gradient(
+      circle,
+      rgba(142, 160, 184, 0.16) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+  }
+
+  .copper-glow {
+    box-shadow: 0 0 0 1px rgba(201, 129, 77, 0.35),
+      0 0 24px -6px rgba(201, 129, 77, 0.45);
+  }
+
+  .led-dot {
+    box-shadow: 0 0 6px 2px var(--color-circuit-led);
+  }
+
+  .panel {
+    background-color: var(--color-circuit-panel);
+    border: 1px solid var(--color-circuit-line);
+  }
+
+  .trace-label {
+    font-family: var(--font-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@keyframes trace-flow {
+  0% {
+    stroke-dashoffset: 240;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes blink-led {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out both;
+}
+
+.animate-blink {
+  animation: blink-led 2.4s ease-in-out infinite;
+}

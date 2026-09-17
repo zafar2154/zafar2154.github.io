@@ -1,8 +1,10 @@
 import About from "./components/About";
+import Achievements from "./components/Achievements";
 import Contact from "./components/Contact";
 import Experience from "./components/Experience";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
+import Journey from "./components/Journey";
 import Nav from "./components/Nav";
 import SkillsEducation from "./components/SkillsEducation";
 
@@ -14,6 +16,8 @@ function App() {
         <Hero />
         <About />
         <Experience />
+        <Journey />
+        <Achievements />
         <SkillsEducation />
         <Contact />
       </main>

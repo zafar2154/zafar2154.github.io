@@ -7,7 +7,7 @@ export default function SkillsEducation() {
     <section id="skills" className="border-t border-circuit-line py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
-          <SectionHeading index="// 04 — Firmware" title="Education & Skills" />
+          <SectionHeading index="// 06 — Firmware" title="Education & Skills" />
         </Reveal>
 
         <div className="mt-12 grid gap-14 md:grid-cols-2">

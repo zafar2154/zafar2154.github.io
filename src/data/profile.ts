@@ -26,6 +26,8 @@ export const navLinks = [
   { id: 'home', label: 'Home', testPoint: 'TP.01' },
   { id: 'about', label: 'About', testPoint: 'TP.02' },
   { id: 'experience', label: 'Projects', testPoint: 'TP.03' },
-  { id: 'skills', label: 'Skills', testPoint: 'TP.04' },
-  { id: 'contact', label: 'Contact', testPoint: 'TP.05' },
+  { id: 'journey', label: 'Experience', testPoint: 'TP.04' },
+  { id: 'achievements', label: 'Awards', testPoint: 'TP.05' },
+  { id: 'skills', label: 'Skills', testPoint: 'TP.06' },
+  { id: 'contact', label: 'Contact', testPoint: 'TP.07' },
 ];

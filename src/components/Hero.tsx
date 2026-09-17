@@ -90,7 +90,6 @@ export default function Hero() {
             </div>
 
             <div className="relative mx-auto w-64 shrink-0 rounded-xl border border-circuit-line bg-circuit-panel p-3 copper-glow sm:w-72">
-              <div className="absolute -top-1.5 -left-1.5 h-3 w-3 rounded-full bg-circuit-copper" />
               <div className="overflow-hidden rounded-lg border border-circuit-line/80">
                 <img
                   src={profile.photo}
@@ -99,8 +98,8 @@ export default function Hero() {
                 />
               </div>
               <div className="mt-3 flex items-center justify-between font-mono text-[10px] text-circuit-muted">
-                <span>IC: ZFAR-01</span>
-                <span>PKG: DIP-6</span>
+                <span>IC: Zahid Faqih Alim Rabbani</span>
+                <span>GPA: 3.74</span>
               </div>
             </div>
 

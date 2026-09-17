@@ -26,11 +26,13 @@ The output goes to `dist/`.
 
 ```
 src/
-  components/   All UI sections (Nav, Hero, About, Experience, SkillsEducation, Contact, Footer)
+  components/   All UI sections (Nav, Hero, About, Experience, Journey, Achievements, SkillsEducation, Contact, Footer)
   data/         Content lives here — edit these instead of the components
-    profile.ts    Name, bio, contact info, social links, nav labels
-    projects.ts   Project cards shown in the "Projects" section
-    education.ts  Education timeline + skills lists
+    profile.ts       Name, bio, contact info, social links, nav labels
+    projects.ts      Project cards shown in the "Projects" section
+    experience.ts    Work + organizational experience shown in the "Experience" timeline
+    achievements.ts  Certifications/bootcamps and competition awards
+    education.ts     Education timeline + skills lists
   hooks/        useReveal — scroll-triggered fade-up animation
 public/img/     Photos used across the site
 ```
@@ -47,11 +49,45 @@ Open `src/data/projects.ts` and add an object to the `projects` array:
   image: "img/my-image.jpg", // place the file in public/img first
   link: "https://github.com/your-username/repo",
   tags: ["ESP32", "Fuzzy Logic"],
+  badge: "🏆 Finalist — Some Competition 2025", // optional, shown as a ribbon on the card
 }
 ```
 
 No other file needs to change — the Projects section renders this array
 automatically.
+
+### Adding or editing work / organizational experience
+
+Open `src/data/experience.ts` and add an object to the `experience` array,
+keeping the list ordered oldest → newest (it renders as a chronological
+path):
+
+```ts
+{
+  id: "my-new-role",
+  role: "Role Title",
+  org: "Organization or Company",
+  period: "2027",
+  type: "work", // or "organization" — controls the icon/color in the timeline
+  description: "One sentence on what you did in this role.",
+}
+```
+
+### Adding or editing certifications / awards
+
+Open `src/data/achievements.ts` and add an object to the `achievements`
+array:
+
+```ts
+{
+  id: "my-cert-or-award",
+  title: "Title of the certification or competition",
+  issuer: "Who issued it / ran the competition",
+  year: "2027",
+  type: "certification", // or "award"
+  description: "One sentence of context.",
+}
+```
 
 ### Editing bio / contact info
 

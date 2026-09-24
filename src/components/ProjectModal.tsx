@@ -1,21 +1,87 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { ExternalLink, X } from "lucide-react";
 import type { Project } from "../data/projects";
+import { gsap, prefersReducedMotion } from "../lib/gsap";
+import { usePressFeedback } from "../hooks/useMicroInteractions";
+
+type Delta = { x: number; y: number; scaleX: number; scaleY: number };
 
 export default function ProjectModal({
   project,
   index,
+  originRect,
   onClose,
 }: {
   project: Project;
   index: number;
+  originRect: DOMRect | null;
   onClose: () => void;
 }) {
-  const closeRef = useRef<HTMLButtonElement>(null);
+  const closeRef = usePressFeedback<HTMLButtonElement>();
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const deltaRef = useRef<Delta>({ x: 0, y: 0, scaleX: 1, scaleY: 1 });
+  const closingRef = useRef(false);
+
+  // Pop the panel open from the exact spot the clicked card was on screen.
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    const backdrop = backdropRef.current;
+    if (!panel || !backdrop) return;
+
+    if (prefersReducedMotion || !originRect) {
+      gsap.set(panel, { opacity: 1, scale: 1, x: 0, y: 0 });
+      gsap.set(backdrop, { opacity: 1 });
+      return;
+    }
+
+    const target = panel.getBoundingClientRect();
+    const scaleX = originRect.width / target.width;
+    const scaleY = originRect.height / target.height;
+    const dx =
+      originRect.left + originRect.width / 2 - (target.left + target.width / 2);
+    const dy =
+      originRect.top + originRect.height / 2 - (target.top + target.height / 2);
+    deltaRef.current = { x: dx, y: dy, scaleX, scaleY };
+
+    gsap.set(backdrop, { opacity: 0 });
+    gsap.to(backdrop, { opacity: 1, duration: 0.35, ease: "power2.out" });
+
+    gsap.fromTo(
+      panel,
+      { x: dx, y: dy, scaleX, scaleY, opacity: 0.5, transformOrigin: "center center" },
+      { x: 0, y: 0, scaleX: 1, scaleY: 1, opacity: 1, duration: 0.55, ease: "power3.out" }
+    );
+  }, [originRect]);
+
+  const animatedClose = () => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+
+    const panel = panelRef.current;
+    const backdrop = backdropRef.current;
+    if (prefersReducedMotion || !panel || !backdrop || !originRect) {
+      onClose();
+      return;
+    }
+
+    const { x, y, scaleX, scaleY } = deltaRef.current;
+    gsap.to(backdrop, { opacity: 0, duration: 0.3, ease: "power2.in" });
+    gsap.to(panel, {
+      x,
+      y,
+      scaleX,
+      scaleY,
+      opacity: 0,
+      duration: 0.4,
+      ease: "power2.in",
+      onComplete: onClose,
+    });
+  };
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") animatedClose();
     };
     document.addEventListener("keydown", onKeyDown);
     document.body.style.overflow = "hidden";
@@ -24,27 +90,31 @@ export default function ProjectModal({
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = "";
     };
-  }, [onClose]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div
-      className="fixed inset-0 z-100 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm animate-fade-up"
-      style={{ animationDuration: "0.2s" }}
+      ref={backdropRef}
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
       onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) animatedClose();
       }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="project-modal-title"
     >
-      <div className="grid-dots sm:w-[90%] h-[86%] sm:h-[80%] w-full overflow-hidden rounded-xl border border-circuit-copper/50 bg-circuit-panel copper-glow flex flex-col">
+      <div
+        ref={panelRef}
+        className="grid-dots sm:w-[90%] h-[86%] sm:h-[80%] w-full overflow-hidden rounded-xl border border-circuit-copper/50 bg-circuit-panel copper-glow flex flex-col"
+      >
         <nav className="shrink-0 z-10 flex items-center justify-between border-b border-circuit-line bg-circuit-panel/95 px-5 py-3 backdrop-blur">
           <span className="font-mono text-[10px] tracking-widest text-circuit-copper">
             DATASHEET // MOD.{(index + 1).toString().padStart(2, "0")}
           </span>
           <button
             ref={closeRef}
-            onClick={onClose}
+            onClick={animatedClose}
             aria-label="Close"
             className="flex h-7 w-7 items-center justify-center rounded-sm border border-circuit-line text-circuit-muted transition-colors hover:border-circuit-copper hover:text-circuit-copper"
           >
@@ -64,7 +134,6 @@ export default function ProjectModal({
                 {project.badge}
               </span>
             )}
-
           </section>
 
           <section className="min-h-0 w-full md:w-1/2 flex-1 md:flex-none md:h-full overflow-y-auto text-white p-6 sm:p-4 scrollbar-thumb-circuit-copper">

@@ -4,6 +4,8 @@ import { profile } from "../data/profile";
 import { GithubIcon, LinkedinIcon, InstagramIcon } from "./icons";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
+import ParallaxDots from "./ParallaxDots";
+import { useTilt } from "../hooks/useMicroInteractions";
 
 type InfoRowProps = {
   icon: ReactNode;
@@ -13,8 +15,13 @@ type InfoRowProps = {
 };
 
 function InfoRow({ icon, label, value, href }: InfoRowProps) {
+  const tiltRef = useTilt<HTMLDivElement>({ max: 4, scale: 1.02, lift: 3 });
+
   const content = (
-    <div className="panel flex h-full items-center gap-4 rounded-lg p-4 transition-colors hover:border-circuit-led/60">
+    <div
+      ref={tiltRef}
+      className="panel flex h-full items-center gap-4 rounded-lg p-4 transition-colors hover:border-circuit-led/60"
+    >
       <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-circuit-line text-circuit-copper">
         {icon}
         <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-circuit-led led-dot" />
@@ -39,8 +46,10 @@ function InfoRow({ icon, label, value, href }: InfoRowProps) {
 
 export default function Contact() {
   return (
-    <section id="contact" className="border-t border-circuit-line bg-circuit-panel/30 py-20 sm:py-28">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+    <section id="contact" className="relative overflow-hidden border-t border-circuit-line bg-circuit-panel/30 py-20 sm:py-28">
+      <ParallaxDots speed={12} className="opacity-40" mask={false} />
+
+      <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
           <SectionHeading index="// 07 — I/O" title="Contact Me" align="left" />
         </Reveal>

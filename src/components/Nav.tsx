@@ -1,18 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { navLinks } from "../data/profile";
+import { gsap, gsapScrollTo, prefersReducedMotion } from "../lib/gsap";
+import { useMagnetic, usePressFeedback } from "../hooks/useMicroInteractions";
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("home");
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const logoRef = useMagnetic<HTMLButtonElement>(0.25);
+  const menuBtnRef = usePressFeedback<HTMLButtonElement>();
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sections = navLinks
@@ -34,23 +31,54 @@ export default function Nav() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const node = mobileMenuRef.current;
+    if (!node) return;
+
+    if (prefersReducedMotion) {
+      node.style.display = open ? "block" : "none";
+      return;
+    }
+
+    if (open) {
+      node.style.display = "block";
+      gsap.fromTo(
+        node,
+        { height: 0, opacity: 0 },
+        { height: "auto", opacity: 1, duration: 0.35, ease: "power2.out" }
+      );
+      gsap.fromTo(
+        node.querySelectorAll("li"),
+        { opacity: 0, x: -12 },
+        { opacity: 1, x: 0, duration: 0.3, stagger: 0.04, delay: 0.05 }
+      );
+    } else if (node.style.display === "block") {
+      gsap.to(node, {
+        height: 0,
+        opacity: 0,
+        duration: 0.25,
+        ease: "power2.in",
+        onComplete: () => {
+          node.style.display = "none";
+        },
+      });
+    }
+  }, [open]);
+
   const handleNavClick = (id: string) => {
     setOpen(false);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    gsapScrollTo(id);
   };
 
   return (
-    <header
-      className={`sticky top-0 z-50 border-b border-circuit-line transition-colors ${
-        scrolled ? "bg-circuit-bg/90 backdrop-blur" : "bg-circuit-bg/60 backdrop-blur"
-      }`}
-    >
+    <header className="relative z-50 border-b border-circuit-line bg-circuit-bg">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8">
         <button
+          ref={logoRef}
           onClick={() => handleNavClick("home")}
           className="flex items-center gap-2 font-mono text-sm font-bold tracking-widest text-circuit-text"
         >
-          <span className="flex h-6 w-6 items-center justify-center rounded-sm border border-circuit-copper/60 text-circuit-copper">
+          <span className="flex h-6 w-6 items-center justify-center rounded-sm border border-circuit-copper/60 text-circuit-copper transition-colors hover:border-circuit-copper hover:bg-circuit-copper/10">
             Z
           </span>
           ZAFAR
@@ -66,7 +94,7 @@ export default function Nav() {
               <li key={link.id}>
                 <button
                   onClick={() => handleNavClick(link.id)}
-                  className={`group flex flex-col items-center rounded-sm px-3 py-1.5 transition-colors ${
+                  className={`group relative flex flex-col items-center rounded-sm px-3 py-1.5 transition-colors ${
                     active === link.id
                       ? "text-circuit-led"
                       : "text-circuit-muted hover:text-circuit-text"
@@ -76,6 +104,11 @@ export default function Nav() {
                   <span className="text-[11px] normal-case tracking-normal">
                     {link.label}
                   </span>
+                  <span
+                    className={`absolute -bottom-0.5 left-1/2 h-px -translate-x-1/2 bg-circuit-led transition-all duration-300 ${
+                      active === link.id ? "w-3/4" : "w-0 group-hover:w-1/2"
+                    }`}
+                  />
                 </button>
               </li>
             ))}
@@ -83,6 +116,7 @@ export default function Nav() {
         </nav>
 
         <button
+          ref={menuBtnRef}
           className="text-circuit-text md:hidden"
           onClick={() => setOpen((o) => !o)}
           aria-label={open ? "Close menu" : "Open menu"}
@@ -92,14 +126,18 @@ export default function Nav() {
         </button>
       </div>
 
-      {open && (
-        <nav className="border-t border-circuit-line bg-circuit-bg px-5 py-3 md:hidden">
+      <div
+        ref={mobileMenuRef}
+        style={{ display: "none", overflow: "hidden" }}
+        className="border-t border-circuit-line bg-circuit-bg px-5 py-3 md:hidden"
+      >
+        <nav>
           <ul className="flex flex-col gap-1 font-mono text-sm">
             {navLinks.map((link) => (
               <li key={link.id}>
                 <button
                   onClick={() => handleNavClick(link.id)}
-                  className={`flex w-full items-center justify-between rounded-sm px-2 py-2 ${
+                  className={`flex w-full items-center justify-between rounded-sm px-2 py-2 transition-colors ${
                     active === link.id ? "text-circuit-led" : "text-circuit-muted"
                   }`}
                 >
@@ -110,7 +148,7 @@ export default function Nav() {
             ))}
           </ul>
         </nav>
-      )}
+      </div>
     </header>
   );
 }

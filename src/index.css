@@ -46,7 +46,7 @@
   .grid-dots {
     background-image: radial-gradient(
       circle,
-      rgba(142, 160, 184, 0.16) 1px,
+      rgb(184, 202, 226) 1px,
       transparent 1px
     );
     background-size: 22px 22px;

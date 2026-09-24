@@ -2,15 +2,18 @@ import { BadgeCheck, Trophy } from "lucide-react";
 import { achievements, type Achievement } from "../data/achievements";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
+import ParallaxDots from "./ParallaxDots";
+import { useTilt } from "../hooks/useMicroInteractions";
 
 function Badge({ item }: { item: Achievement }) {
   const isAward = item.type === "award";
   const Icon = isAward ? Trophy : BadgeCheck;
   const accent = isAward ? "text-circuit-amber" : "text-circuit-led";
   const border = isAward ? "border-circuit-amber/50" : "border-circuit-led/50";
+  const tiltRef = useTilt<HTMLDivElement>({ max: 5, scale: 1.02, lift: 4 });
 
   return (
-    <div className={`panel flex h-full gap-4 rounded-lg border p-5 ${border}`}>
+    <div ref={tiltRef} className={`panel flex h-full gap-4 rounded-lg border p-5 ${border}`}>
       <span
         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 bg-circuit-bg ${border} ${accent}`}
       >
@@ -37,8 +40,10 @@ function Badge({ item }: { item: Achievement }) {
 
 export default function Achievements() {
   return (
-    <section id="achievements" className="border-t border-circuit-line bg-circuit-panel/30 py-20 sm:py-28">
-      <div className="mx-auto max-w-5xl px-5 sm:px-8">
+    <section id="achievements" className="relative overflow-hidden border-t border-circuit-line bg-circuit-panel/30 py-20 sm:py-28">
+      <ParallaxDots speed={12} className="opacity-40" mask={false} />
+
+      <div className="relative mx-auto max-w-5xl px-5 sm:px-8">
         <Reveal>
           <SectionHeading index="// 05 — Badges" title="Achievements & Certifications" />
         </Reveal>

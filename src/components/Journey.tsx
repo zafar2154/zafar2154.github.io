@@ -1,14 +1,18 @@
+import { useLayoutEffect, useRef } from "react";
 import { Briefcase, Users } from "lucide-react";
 import { experience, type ExperienceItem } from "../data/experience";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
+import ParallaxDots from "./ParallaxDots";
+import { useTilt } from "../hooks/useMicroInteractions";
+import { gsap, prefersReducedMotion } from "../lib/gsap";
 
 function Marker({ type }: { type: ExperienceItem["type"] }) {
   const isWork = type === "work";
   const Icon = isWork ? Briefcase : Users;
   return (
     <span
-      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 bg-circuit-bg ${isWork ? "border-circuit-copper text-circuit-copper" : "border-circuit-led text-circuit-led"
+      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 bg-circuit-bg transition-transform duration-300 hover:scale-110 ${isWork ? "border-circuit-copper text-circuit-copper" : "border-circuit-led text-circuit-led"
         }`}
     >
       <Icon size={15} />
@@ -18,8 +22,12 @@ function Marker({ type }: { type: ExperienceItem["type"] }) {
 
 function Card({ item, align }: { item: ExperienceItem; align: "left" | "right" }) {
   const isWork = item.type === "work";
+  const tiltRef = useTilt<HTMLDivElement>({ max: 4, scale: 1.015, lift: 3 });
   return (
-    <div className={`panel rounded-lg p-5 ${align === "right" ? "md:text-right" : "md:text-left"}`}>
+    <div
+      ref={tiltRef}
+      className={`panel rounded-lg p-5 transition-colors hover:border-circuit-led/50 ${align === "right" ? "md:text-right" : "md:text-left"}`}
+    >
       <div
         className={`flex items-center gap-2 font-mono text-[10px] ${align === "right" ? "md:justify-end" : "md:justify-start"
           } ${isWork ? "text-circuit-copper" : "text-circuit-led"}`}
@@ -41,16 +49,47 @@ function Card({ item, align }: { item: ExperienceItem; align: "left" | "right" }
 }
 
 export default function Journey() {
+  const lineRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const line = lineRef.current;
+    if (!line || prefersReducedMotion) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        line,
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: "none",
+          transformOrigin: "top center",
+          scrollTrigger: {
+            trigger: line,
+            start: "top 75%",
+            end: "bottom 90%",
+            scrub: 0.6,
+          },
+        }
+      );
+    }, line);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="journey" className="border-t border-circuit-line py-20 sm:py-28">
-      <div className="mx-auto max-w-5xl px-5 sm:px-8">
+    <section id="journey" className="relative overflow-hidden border-t border-circuit-line py-20 sm:py-28">
+      <ParallaxDots speed={12} className="opacity-40" mask={false} />
+
+      <div className="relative mx-auto max-w-5xl px-5 sm:px-8">
         <Reveal>
           <SectionHeading index="// 04 — Trace Path" title="Experience & Organization" />
         </Reveal>
 
         {/* Desktop / tablet: zigzag path centered on a vertical copper trace */}
         <ol className="relative mt-14 hidden md:block">
-          <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-circuit-copper-dim" />
+          <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-circuit-line" />
+          <div
+            ref={lineRef}
+            className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-circuit-copper-dim"
+          />
           <div className="space-y-14">
             {experience.map((item, i) => {
               const onRight = i % 2 === 0;
@@ -82,8 +121,8 @@ export default function Journey() {
               <li className="relative">
                 <span
                   className={`absolute -left-7.75 top-0 flex h-6 w-6 items-center justify-center rounded-full border-2 bg-circuit-bg ${item.type === "work"
-                      ? "border-circuit-copper text-circuit-copper"
-                      : "border-circuit-led text-circuit-led"
+                    ? "border-circuit-copper text-circuit-copper"
+                    : "border-circuit-led text-circuit-led"
                     }`}
                 >
                   {item.type === "work" ? <Briefcase size={11} /> : <Users size={11} />}

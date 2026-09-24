@@ -1,11 +1,38 @@
+import { useLayoutEffect, useRef } from "react";
 import { education, skillColumns } from "../data/education";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
+import ParallaxDots from "./ParallaxDots";
+import { gsap, prefersReducedMotion } from "../lib/gsap";
 
 export default function SkillsEducation() {
+  const timelineRef = useRef<HTMLOListElement>(null);
+
+  useLayoutEffect(() => {
+    const node = timelineRef.current;
+    if (!node || prefersReducedMotion) return;
+    const ctx = gsap.context(() => {
+      const dots = node.querySelectorAll<HTMLElement>("[data-node]");
+      gsap.fromTo(
+        dots,
+        { scale: 0 },
+        {
+          scale: 1,
+          duration: 0.4,
+          ease: "back.out(2)",
+          stagger: 0.15,
+          scrollTrigger: { trigger: node, start: "top 75%", once: true },
+        }
+      );
+    }, node);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="skills" className="border-t border-circuit-line py-20 sm:py-28">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+    <section id="skills" className="relative overflow-hidden border-t border-circuit-line py-20 sm:py-28">
+      <ParallaxDots speed={12} className="opacity-40" mask={false} />
+
+      <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
           <SectionHeading index="// 06 — Firmware" title="Education & Skills" />
         </Reveal>
@@ -16,10 +43,13 @@ export default function SkillsEducation() {
             <h3 className="trace-label mb-6 text-xs text-circuit-muted">
               Education timeline
             </h3>
-            <ol className="relative border-l border-circuit-copper-dim pl-6">
+            <ol ref={timelineRef} className="relative border-l border-circuit-copper-dim pl-6">
               {education.map((item, i) => (
                 <li key={item.title} className="relative pb-10 last:pb-0">
-                  <span className="absolute -left-[27px] top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-circuit-copper bg-circuit-bg">
+                  <span
+                    data-node
+                    className="absolute -left-[27px] top-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-circuit-copper bg-circuit-bg transition-transform duration-300 hover:scale-125"
+                  >
                     <span className="h-1.5 w-1.5 rounded-full bg-circuit-copper" />
                   </span>
                   <p className="font-mono text-[10px] text-circuit-copper">
@@ -60,9 +90,9 @@ export default function SkillsEducation() {
                     {col.items.map((item) => (
                       <li
                         key={item}
-                        className="flex items-center gap-2 font-mono text-xs text-circuit-muted"
+                        className="group flex items-center gap-2 font-mono text-xs text-circuit-muted transition-colors hover:text-circuit-text"
                       >
-                        <span className="h-1 w-3 shrink-0 bg-circuit-led/70" />
+                        <span className="h-1 w-3 shrink-0 bg-circuit-led/70 transition-all duration-300 group-hover:w-5 group-hover:bg-circuit-led" />
                         {item}
                       </li>
                     ))}

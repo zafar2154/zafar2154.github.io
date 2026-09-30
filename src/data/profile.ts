@@ -17,6 +17,7 @@ export const profile = {
   email: 'zafar2154.ez@gmail.com',
   status: 'Open to Work',
   photo: 'img/profile.jpg',
+  photoSecondary: 'img/profileSecondary.jpg',
   intro:
     'Graduate student at UPN Veteran Jakarta (since 2022), majoring in Electrical Engineering. Enthusiast in artificial intelligence, IoT, electronics, and control systems — I like learning new things, and I try to build something real out of every idea.',
   about: [

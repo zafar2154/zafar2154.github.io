@@ -64,6 +64,8 @@ export default function Hero() {
             ".hero-card",
             ".hero-left-pin",
             ".hero-right-pin",
+            ".hero-end-left-pins",
+            ".hero-end-right-pins",
             ".about-section"
           ],
           {
@@ -119,7 +121,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="mx-auto grid w-full gap-14 px-5 py-20 sm:px-50 sm:py-28 lg:grid-cols-2 lg:items-start">
+      <div className="mx-auto grid w-full gap-14 px-5 py-26 sm:px-50 sm:py-28 lg:grid-cols-2 lg:items-start">
         <div className="lg:col-start-1 lg:row-start-1">
           <p className="hero-label trace-label text-xs text-circuit-copper">
             // S1 — Electrical Engineering
@@ -185,7 +187,7 @@ export default function Hero() {
           <div className="hero-visual-stage grid items-center gap-1 sm:grid-cols-[1fr_auto_1fr] pt-15">
             {/* LEFT PINS */}
 
-            <div className="hero-left-pins flex-col justify-around gap-6 py-4 sm:flex">
+            <div className="hero-left-pins hidden flex-col justify-around gap-6 py-4 sm:flex">
               {leftPins.map((pin) => (
                 <div
                   key={pin.id}
@@ -207,7 +209,28 @@ export default function Hero() {
                 </div>
               ))}
             </div>
-            <div className="hero-card-intro">
+            <div className="hero-card-intro relative">
+              {/* END LEFT PINS — appear at card's end-pin position */}
+              <div className="hero-end-left-pins pointer-events-none absolute right-full top-1/2 -translate-y-1/2 hidden flex-col justify-around gap-6 py-4 pr-1 sm:flex opacity-0">
+                {leftPins.map((pin) => (
+                  <div
+                    key={`end-${pin.id}`}
+                    className="flex items-center justify-end gap-2 text-right"
+                  >
+                    <div className="leading-tight">
+                      <div className="font-mono text-[10px] text-circuit-copper">
+                        PIN {pin.id}
+                      </div>
+                      <div className="max-w-44 text-xs text-circuit-muted">
+                        {pin.label}
+                      </div>
+                    </div>
+                    <div className="h-px w-6 bg-circuit-copper-dim sm:w-8" />
+                    <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-circuit-copper" />
+                  </div>
+                ))}
+              </div>
+
               <div
                 ref={cardRef}
                 onMouseMove={(e) => {
@@ -225,12 +248,15 @@ export default function Hero() {
                   transformStyle: "preserve-3d",
                 }}
               >
-                <div className="overflow-hidden rounded-lg border border-circuit-line/80">
+                <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-circuit-line/80 isolate">
                   <img
                     src={profile.photo}
                     alt={profile.name}
-                    className="hero-image aspect-square w-full object-cover contrast-110 saturate-75 will-change-transform"
+                    className="hero-image absolute inset-0 h-full w-full object-cover contrast-110 saturate-75 will-change-transform"
                   />
+                  <img src={profile.photoSecondary || profile.photo} // Ganti dengan path foto kedua kamu
+                    alt={`${profile.name} secondary`}
+                    className="hero-image-secondary absolute inset-0 h-full w-full object-cover contrast-125 saturate-100 opacity-0 will-change-transform" />
                 </div>
 
                 <div className="mt-3 flex items-center justify-between gap-3 font-mono text-[10px] text-circuit-muted">
@@ -242,6 +268,27 @@ export default function Hero() {
                     GPA: 3.74
                   </span>
                 </div>
+              </div>
+
+              {/* END RIGHT PINS — appear at card's end-pin position */}
+              <div className="hero-end-right-pins pointer-events-none absolute left-full top-1/2 -translate-y-1/2 hidden flex-col justify-around gap-6 py-4 pl-1 sm:flex opacity-0">
+                {rightPins.map((pin) => (
+                  <div
+                    key={`end-${pin.id}`}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-circuit-copper" />
+                    <div className="h-px w-6 bg-circuit-copper-dim sm:w-8" />
+                    <div className="leading-tight">
+                      <div className="font-mono text-[10px] text-circuit-copper">
+                        PIN {pin.id}
+                      </div>
+                      <div className="max-w-44 wrap-break-words text-xs text-circuit-muted">
+                        {pin.label}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -270,7 +317,7 @@ export default function Hero() {
               ))}
             </div>
           </div>
-          <dl className="mt-6 grid grid-cols-1 gap-2 font-mono text-xs sm:hidden">
+          <dl className="mt-16 grid grid-cols-1 gap-2 font-mono text-xs sm:hidden">
             {[...leftPins, ...rightPins].map((pin) => (
               <div
                 key={pin.id}

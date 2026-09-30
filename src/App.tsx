@@ -8,7 +8,7 @@ import Nav from "./components/Nav";
 import SkillsEducation from "./components/SkillsEducation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useLayoutEffect, useRef } from "react";
+import { useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 

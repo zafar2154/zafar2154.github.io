@@ -2,7 +2,6 @@ import { BadgeCheck, Trophy } from "lucide-react";
 import { achievements, type Achievement } from "../data/achievements";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
-import ParallaxDots from "./ParallaxDots";
 import { useTilt } from "../hooks/useMicroInteractions";
 
 function Badge({ item }: { item: Achievement }) {
@@ -41,8 +40,6 @@ function Badge({ item }: { item: Achievement }) {
 export default function Achievements() {
   return (
     <section id="achievements" className="relative overflow-hidden border-t border-circuit-line bg-circuit-panel/30 py-20 sm:py-28">
-      <ParallaxDots speed={12} className="opacity-40" mask={false} />
-
       <div className="relative mx-auto max-w-5xl px-5 sm:px-8">
         <Reveal>
           <SectionHeading index="// 05 — Badges" title="Achievements & Certifications" />

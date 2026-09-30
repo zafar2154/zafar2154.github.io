@@ -13,6 +13,10 @@ import {
   magneticButton,
   resetMagneticButton,
 } from "../animations/hero";
+import Reveal from "./Reveal";
+import SectionHeading from "./SectionHeading";
+import TypewriterGSAP from "../animations/typewriter";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const leftPins = [
@@ -54,9 +58,13 @@ export default function Hero() {
             ".hero-intro",
             ".hero-button",
             ".hero-status",
+            ".hero-visual-container",
+            ".hero-visual-stage",
+            ".hero-card-intro",
             ".hero-card",
             ".hero-left-pin",
             ".hero-right-pin",
+            ".about-section"
           ],
           {
             clearProps: "all",
@@ -98,7 +106,7 @@ export default function Hero() {
     <section
       ref={heroRef}
       id="home"
-      className="hero-section relative overflow-hidden"
+      className="hero-section relative"
     >
       <div
         ref={backgroundRef}
@@ -111,8 +119,8 @@ export default function Hero() {
         }}
       />
 
-      <div className="mx-auto grid max-w-6xl gap-14 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-        <div className="relative">
+      <div className="mx-auto grid w-full gap-14 px-5 py-20 sm:px-50 sm:py-28 lg:grid-cols-2 lg:items-start">
+        <div className="lg:col-start-1 lg:row-start-1">
           <p className="hero-label trace-label text-xs text-circuit-copper">
             // S1 — Electrical Engineering
           </p>
@@ -125,11 +133,14 @@ export default function Hero() {
               {profile.name.split(" ").slice(2).join(" ")}
             </span>
           </h1>
-
-          <p className="hero-focus trace-label mt-4 text-sm text-circuit-led">
-            {profile.focus}
-          </p>
-
+          <div className="hero-focus trace-label mt-4 text-sm text-circuit-led">
+            <TypewriterGSAP
+              words={profile.focus}
+              typeSpeed={0.08}
+              deleteSpeed={0.04}
+              delayBetween={1}
+            />
+          </div>
           <p className="hero-intro mt-5 max-w-xl text-sm leading-relaxed text-circuit-muted sm:text-base">
             {profile.intro}
           </p>
@@ -170,11 +181,11 @@ export default function Hero() {
           </div>
         </div>
 
-        <div>
-          <div className="grid items-center gap-2 sm:grid-cols-[1fr_auto_1fr]">
+        <div className="hero-visual-container lg:col-start-2 lg:row-start-1 lg:row-span-2">
+          <div className="hero-visual-stage grid items-center gap-1 sm:grid-cols-[1fr_auto_1fr] pt-15">
             {/* LEFT PINS */}
 
-            <div className="hero-left-pins hidden flex-col justify-around gap-6 py-4 sm:flex">
+            <div className="hero-left-pins flex-col justify-around gap-6 py-4 sm:flex">
               {leftPins.map((pin) => (
                 <div
                   key={pin.id}
@@ -196,47 +207,47 @@ export default function Hero() {
                 </div>
               ))}
             </div>
+            <div className="hero-card-intro">
+              <div
+                ref={cardRef}
+                onMouseMove={(e) => {
+                  if (cardRef.current) {
+                    handleCardMove(cardRef.current, e);
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (cardRef.current) {
+                    handleCardLeave(cardRef.current);
+                  }
+                }}
+                className="hero-card relative mx-auto w-64 shrink-0 rounded-xl border border-circuit-line bg-circuit-panel p-3 copper-glow will-change-transform sm:w-72"
+                style={{
+                  transformStyle: "preserve-3d",
+                }}
+              >
+                <div className="overflow-hidden rounded-lg border border-circuit-line/80">
+                  <img
+                    src={profile.photo}
+                    alt={profile.name}
+                    className="hero-image aspect-square w-full object-cover contrast-110 saturate-75 will-change-transform"
+                  />
+                </div>
 
-            <div
-              ref={cardRef}
-              onMouseMove={(e) => {
-                if (cardRef.current) {
-                  handleCardMove(cardRef.current, e);
-                }
-              }}
-              onMouseLeave={() => {
-                if (cardRef.current) {
-                  handleCardLeave(cardRef.current);
-                }
-              }}
-              className="hero-card relative mx-auto w-64 shrink-0 rounded-xl border border-circuit-line bg-circuit-panel p-3 copper-glow will-change-transform sm:w-72"
-              style={{
-                transformStyle: "preserve-3d",
-              }}
+                <div className="mt-3 flex items-center justify-between gap-3 font-mono text-[10px] text-circuit-muted">
+                  <span className="truncate">
+                    IC: Zahid Faqih Alim Rabbani
+                  </span>
 
-            >
-              <div className="overflow-hidden rounded-lg border border-circuit-line/80">
-                <img
-                  src={profile.photo}
-                  alt={profile.name}
-                  className="hero-image aspect-square w-full object-cover contrast-110 saturate-75 will-change-transform"
-                />
-              </div>
-
-              <div className="mt-3 flex items-center justify-between gap-3 font-mono text-[10px] text-circuit-muted">
-                <span className="truncate">
-                  IC: Zahid Faqih Alim Rabbani
-                </span>
-
-                <span className="shrink-0">
-                  GPA: 3.74
-                </span>
+                  <span className="shrink-0">
+                    GPA: 3.74
+                  </span>
+                </div>
               </div>
             </div>
 
             {/* RIGHT PINS */}
 
-            <div className="hero-right-pins hidden flex-col justify-around gap-6 py-4 sm:flex">
+            <div className="hero-right-pins hidden flex-col justify-around gap-6 py-4 sm:flex overflow-visible">
               {rightPins.map((pin) => (
                 <div
                   key={pin.id}
@@ -276,6 +287,30 @@ export default function Hero() {
             ))}
           </dl>
         </div>
+
+        {/* about */}
+        <section id="about" className="about-section lg:col-start-1 lg:row-start-2 py-20 sm:py-28">
+          <div className="mx-auto max-w-full">
+            <Reveal>
+              <SectionHeading index="// 02 — Register" title="About Me" />
+            </Reveal>
+
+            <div>
+              {profile.about.map((paragraph, i) => (
+                <Reveal key={i} delay={i * 120}>
+                  <div className="panel h-full rounded-lg p-6">
+                    <p className="font-mono text-[10px] text-circuit-copper">
+                      0x{(i + 1).toString().padStart(2, "0")}
+                    </p>
+                    <p className="mt-3 text-sm leading-relaxed text-circuit-muted sm:text-base">
+                      {paragraph}
+                    </p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
     </section >
   );

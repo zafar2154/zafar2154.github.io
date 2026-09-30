@@ -60,7 +60,7 @@ export function desktopIntro() {
       '-=0.35',
     )
     .from(
-      '.hero-card',
+      '.hero-card-intro',
       {
         y: 40,
         opacity: 0,
@@ -149,7 +149,7 @@ export function mobileIntro() {
       '-=0.25',
     )
     .from(
-      '.hero-card',
+      '.hero-card-intro',
       {
         y: 25,
         opacity: 0,

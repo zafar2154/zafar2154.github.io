@@ -3,7 +3,6 @@ import { Briefcase, Users } from "lucide-react";
 import { experience, type ExperienceItem } from "../data/experience";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
-import ParallaxDots from "./ParallaxDots";
 import { useTilt } from "../hooks/useMicroInteractions";
 import { gsap, prefersReducedMotion } from "../lib/gsap";
 
@@ -76,8 +75,6 @@ export default function Journey() {
 
   return (
     <section id="journey" className="relative overflow-hidden border-t border-circuit-line py-20 sm:py-28">
-      <ParallaxDots speed={12} className="opacity-40" mask={false} />
-
       <div className="relative mx-auto max-w-5xl px-5 sm:px-8">
         <Reveal>
           <SectionHeading index="// 04 — Trace Path" title="Experience & Organization" />

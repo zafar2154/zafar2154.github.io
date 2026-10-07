@@ -11,19 +11,6 @@ interface ParallaxRefs {
 }
 
 export function setupParallax({ hero, background }: ParallaxRefs) {
-  // ─── 1. Background Parallax ───────────────────────────────────
-  gsap.to(background, {
-    y: 200,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: hero,
-      start: 'top top',
-      end: 'bottom top',
-      scrub: 0.5,
-    },
-  });
-
-  // ─── 2. Pin Kiri & Kanan Awal Fade Out saat Scroll ────────────
   gsap
     .timeline({
       scrollTrigger: {
@@ -36,103 +23,108 @@ export function setupParallax({ hero, background }: ParallaxRefs) {
     .to('.hero-left-pins', { x: -200, opacity: 0, ease: 'none' }, 0)
     .to('.hero-right-pins', { x: 200, opacity: 0, ease: 'none' }, 0);
 
-  // ─── 3. Breathing Animation pada Card ────────────────────────
+  // ─── 3. Breathing Animation (hanya menyentuh .hero-card-breathe)
   const breatheTl = gsap.timeline({ paused: true, repeat: -1, yoyo: true });
-  breatheTl.to('.hero-card', {
+  breatheTl.to('.hero-card-breathe', {
     rotate: 2,
     duration: 1.8,
     ease: 'sine.inOut',
   });
 
-  const resetCard = () => {
+  let resetTween: gsap.core.Tween | undefined;
+
+  const startBreathe = () => {
+    resetTween?.kill();
+    breatheTl.restart();
+  };
+
+  const stopBreathe = () => {
     breatheTl.pause();
-    gsap.to('.hero-card', {
-      boxShadow:
-        '0 0 0 1px rgba(201,129,77,0.35), 0 0 24px -6px rgba(201,129,77,0.45)',
-      scale: 1,
+    resetTween = gsap.to('.hero-card-breathe', {
       rotate: 0,
       duration: 0.6,
       ease: 'power2.out',
     });
   };
 
-  // ─── 4. TAHAP 1: Pin Hero Card Sampai Tengah .about-section ──
-  const cardEl = document.querySelector<HTMLElement>('.hero-card-intro');
-  if (cardEl) {
-    ScrollTrigger.create({
-      id: 'hero-card-pin',
-      trigger: cardEl,
-      start: 'center center',
-      endTrigger: '#about',
-      end: 'center center',
-      pin: true,
-      pinType: 'transform', // PENTING: Mencegah bug/blink akibat CSS Grid
-      pinSpacing: false,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onEnter: () => breatheTl.play(),
-      onLeaveBack: () => resetCard(),
-    });
-  }
-
-  // ─── 5. TAHAP 2: Full-Page Pin & Storytelling Sequence ────────
-  // State awal elemen sebelum animasi dimulai
-  gsap.set('.about-section', { x: -150, opacity: 0 });
+  // ─── 4. State awal elemen storytelling ────────────────────────
+  gsap.set('.about-inner', { x: -150, opacity: 0 });
   gsap.set('.hero-end-left-pins', { x: -60, opacity: 0 });
   gsap.set('.hero-end-right-pins', { x: 60, opacity: 0 });
   gsap.set('.hero-image-secondary', { opacity: 0 });
 
-  const websitePinTl = gsap.timeline({
+  const storyTl = gsap.timeline({
     scrollTrigger: {
+      id: 'about-story',
       trigger: '.about-section',
-      start: '60% center', // Terpemicu saat .about-section di tengah layar
-      end: '+=1000', // Jarak scroll penahanan layar
-      pin: hero, // Pin seluruh hero container
+      start: 'center center',
+      end: '+=1000',
+      pin: true,
       pinSpacing: true,
-      scrub: 1, // Animasi mulus terikat scroll mouse
-      markers: true,
-      onLeave: () => resetCard(),
-      onEnterBack: () => breatheTl.play(),
+      scrub: 1,
     },
   });
 
-  websitePinTl
-    .to('.about-section', {
+  storyTl
+    .to('.about-inner', {
       x: 0,
       opacity: 1,
       duration: 1,
       ease: 'power2.out',
     })
-
     .to(
       '.hero-image-secondary',
-      {
-        opacity: 1,
-        duration: 1,
-        ease: 'power1.inOut',
-      },
+      { opacity: 1, duration: 1, ease: 'power1.inOut' },
       '-=1',
     )
-
     .to(
       '.hero-end-left-pins',
-      {
-        x: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power2.out',
-      },
+      { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' },
       '-=0.3',
     )
-
     .to(
       '.hero-end-right-pins',
-      {
-        x: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power2.out',
-      },
+      { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' },
       '<',
     );
+
+  const storyStart = () => ScrollTrigger.getById('about-story')?.start ?? 0;
+  const storyEnd = () => ScrollTrigger.getById('about-story')?.end ?? 1;
+
+  gsap.to(background, {
+    y: 200,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: hero,
+      start: 'top top',
+      end: storyStart,
+      scrub: 0.5,
+      invalidateOnRefresh: true,
+    },
+  });
+
+  ScrollTrigger.create({
+    id: 'hero-bg-pin',
+    trigger: '.hero-bg-pin',
+    start: storyStart,
+    end: storyEnd,
+    pin: true,
+    pinSpacing: false,
+    invalidateOnRefresh: true,
+  });
+
+  ScrollTrigger.create({
+    id: 'hero-card-pin',
+    trigger: '.hero-card-pin',
+    start: 'center center',
+    // berakhir persis di akhir pin about
+    end: () => ScrollTrigger.getById('about-story')?.end ?? '+=1',
+    pin: true,
+    pinSpacing: false,
+    invalidateOnRefresh: true,
+    onEnter: startBreathe,
+    onLeave: stopBreathe,
+    onEnterBack: startBreathe,
+    onLeaveBack: stopBreathe,
+  });
 }

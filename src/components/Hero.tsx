@@ -26,7 +26,7 @@ const leftPins = [
 ];
 
 const rightPins = [
-  { id: "04", label: profile.focus },
+  { id: "04", label: profile.focus.join(", ") },
   { id: "05", label: profile.email },
   { id: "06", label: profile.status },
 ];
@@ -60,17 +60,21 @@ export default function Hero() {
             ".hero-status",
             ".hero-visual-container",
             ".hero-visual-stage",
+            ".hero-bg-pin",
+            ".hero-card-pin",
             ".hero-card-intro",
+            ".hero-card-breathe",
             ".hero-card",
             ".hero-left-pin",
             ".hero-right-pin",
             ".hero-end-left-pins",
             ".hero-end-right-pins",
-            ".about-section"
+            ".about-section",
+            ".about-inner",
           ],
           {
             clearProps: "all",
-          }
+          },
         );
       });
 
@@ -86,14 +90,15 @@ export default function Hero() {
           });
 
           return setupImageHover(cardRef.current!);
-        });
+        },
+      );
 
       // mobile
       mm.add(
         "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
         () => {
           mobileIntro();
-        }
+        },
       );
 
       return () => {
@@ -105,21 +110,26 @@ export default function Hero() {
   }, []);
 
   return (
-    <section
-      ref={heroRef}
-      id="home"
-      className="hero-section relative"
-    >
-      <div
-        ref={backgroundRef}
-        className="pointer-events-none absolute inset-0 grid-dots opacity-70"
-        style={{
-          maskImage:
-            "radial-gradient(ellipse at center, black, transparent 100%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse at center, black, transparent 75%)",
-        }}
-      />
+    <section ref={heroRef} id="home" className="hero-section relative">
+      {/* FRAME — hanya menutupi hero (absolute), TIDAK di-pin */}
+      <div className="pointer-events-none absolute inset-0">
+        {/* LAYER PIN — hanya ScrollTrigger (pin) yang boleh menyentuh elemen ini.
+            Sengaja bukan absolute: spacer ScrollTrigger akan berukuran 0 jika
+            elemen yang di-pin absolute. */}
+        <div className="hero-bg-pin relative h-full w-full">
+          {/* LAYER PARALLAX — hanya parallax (y) */}
+          <div
+            ref={backgroundRef}
+            className="absolute inset-0 grid-dots opacity-70"
+            style={{
+              maskImage:
+                "radial-gradient(ellipse at center, black, transparent 100%)",
+              WebkitMaskImage:
+                "radial-gradient(ellipse at center, black, transparent 75%)",
+            }}
+          />
+        </div>
+      </div>
 
       <div className="mx-auto grid w-full gap-14 px-5 py-26 sm:px-50 sm:py-28 lg:grid-cols-2 lg:items-start">
         <div className="lg:col-start-1 lg:row-start-1">
@@ -150,12 +160,8 @@ export default function Hero() {
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <button
               onClick={() => scrollTo("contact")}
-              onMouseMove={(e) =>
-                magneticButton(e.currentTarget, e)
-              }
-              onMouseLeave={(e) =>
-                resetMagneticButton(e.currentTarget)
-              }
+              onMouseMove={(e) => magneticButton(e.currentTarget, e)}
+              onMouseLeave={(e) => resetMagneticButton(e.currentTarget)}
               className="hero-button inline-flex items-center gap-2 rounded-sm bg-circuit-led px-5 py-2.5 font-mono text-xs font-bold tracking-wide text-circuit-bg will-change-transform"
             >
               <Mail size={14} />
@@ -164,12 +170,8 @@ export default function Hero() {
 
             <button
               onClick={() => scrollTo("experience")}
-              onMouseMove={(e) =>
-                magneticButton(e.currentTarget, e)
-              }
-              onMouseLeave={(e) =>
-                resetMagneticButton(e.currentTarget)
-              }
+              onMouseMove={(e) => magneticButton(e.currentTarget, e)}
+              onMouseLeave={(e) => resetMagneticButton(e.currentTarget)}
               className="hero-button inline-flex items-center gap-2 rounded-sm border border-circuit-copper/60 px-5 py-2.5 font-mono text-xs font-bold tracking-wide text-circuit-copper will-change-transform"
             >
               View projects
@@ -209,86 +211,94 @@ export default function Hero() {
                 </div>
               ))}
             </div>
-            <div className="hero-card-intro relative">
-              {/* END LEFT PINS — appear at card's end-pin position */}
-              <div className="hero-end-left-pins pointer-events-none absolute right-full top-1/2 -translate-y-1/2 hidden flex-col justify-around gap-6 py-4 pr-1 sm:flex opacity-0">
-                {leftPins.map((pin) => (
-                  <div
-                    key={`end-${pin.id}`}
-                    className="flex items-center justify-end gap-2 text-right"
-                  >
-                    <div className="leading-tight">
-                      <div className="font-mono text-[10px] text-circuit-copper">
-                        PIN {pin.id}
+            {/* LAYER 1 — hanya ScrollTrigger (pin) yang boleh menyentuh elemen ini */}
+            <div className="hero-card-pin">
+              {/* LAYER 2 — hanya intro animation */}
+              <div className="hero-card-intro relative">
+                {/* END LEFT PINS — appear at card's end-pin position */}
+                <div className="hero-end-left-pins pointer-events-none absolute right-full top-1/2 -translate-y-1/2 hidden flex-col justify-around gap-6 py-4 pr-1 sm:flex opacity-0">
+                  {leftPins.map((pin) => (
+                    <div
+                      key={`end-${pin.id}`}
+                      className="flex items-center justify-end gap-2 text-right"
+                    >
+                      <div className="leading-tight">
+                        <div className="font-mono text-[10px] text-circuit-copper">
+                          PIN {pin.id}
+                        </div>
+                        <div className="max-w-44 text-xs text-circuit-muted">
+                          {pin.label}
+                        </div>
                       </div>
-                      <div className="max-w-44 text-xs text-circuit-muted">
-                        {pin.label}
-                      </div>
+                      <div className="h-px w-6 bg-circuit-copper-dim sm:w-8" />
+                      <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-circuit-copper" />
                     </div>
-                    <div className="h-px w-6 bg-circuit-copper-dim sm:w-8" />
-                    <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-circuit-copper" />
-                  </div>
-                ))}
-              </div>
-
-              <div
-                ref={cardRef}
-                onMouseMove={(e) => {
-                  if (cardRef.current) {
-                    handleCardMove(cardRef.current, e);
-                  }
-                }}
-                onMouseLeave={() => {
-                  if (cardRef.current) {
-                    handleCardLeave(cardRef.current);
-                  }
-                }}
-                className="hero-card relative mx-auto w-64 shrink-0 rounded-xl border border-circuit-line bg-circuit-panel p-3 copper-glow will-change-transform sm:w-72"
-                style={{
-                  transformStyle: "preserve-3d",
-                }}
-              >
-                <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-circuit-line/80 isolate">
-                  <img
-                    src={profile.photo}
-                    alt={profile.name}
-                    className="hero-image absolute inset-0 h-full w-full object-cover contrast-110 saturate-75 will-change-transform"
-                  />
-                  <img src={profile.photoSecondary || profile.photo} // Ganti dengan path foto kedua kamu
-                    alt={`${profile.name} secondary`}
-                    className="hero-image-secondary absolute inset-0 h-full w-full object-cover contrast-125 saturate-100 opacity-0 will-change-transform" />
+                  ))}
                 </div>
 
-                <div className="mt-3 flex items-center justify-between gap-3 font-mono text-[10px] text-circuit-muted">
-                  <span className="truncate">
-                    IC: Zahid Faqih Alim Rabbani
-                  </span>
-
-                  <span className="shrink-0">
-                    GPA: 3.74
-                  </span>
-                </div>
-              </div>
-
-              {/* END RIGHT PINS — appear at card's end-pin position */}
-              <div className="hero-end-right-pins pointer-events-none absolute left-full top-1/2 -translate-y-1/2 hidden flex-col justify-around gap-6 py-4 pl-1 sm:flex opacity-0">
-                {rightPins.map((pin) => (
+                {/* LAYER 3 — hanya breathing */}
+                <div className="hero-card-breathe">
+                  {/* LAYER 4 — hanya hover tilt */}
                   <div
-                    key={`end-${pin.id}`}
-                    className="flex items-center gap-2"
+                    ref={cardRef}
+                    onMouseMove={(e) => {
+                      if (cardRef.current) {
+                        handleCardMove(cardRef.current, e);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (cardRef.current) {
+                        handleCardLeave(cardRef.current);
+                      }
+                    }}
+                    className="hero-card relative mx-auto w-64 shrink-0 rounded-xl border border-circuit-line bg-circuit-panel p-3 copper-glow will-change-transform sm:w-72"
+                    style={{
+                      transformStyle: "preserve-3d",
+                    }}
                   >
-                    <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-circuit-copper" />
-                    <div className="h-px w-6 bg-circuit-copper-dim sm:w-8" />
-                    <div className="leading-tight">
-                      <div className="font-mono text-[10px] text-circuit-copper">
-                        PIN {pin.id}
-                      </div>
-                      <div className="max-w-44 wrap-break-words text-xs text-circuit-muted">
-                        {pin.label}
-                      </div>
+                    <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-circuit-line/80 isolate">
+                      <img
+                        src={profile.photo}
+                        alt={profile.name}
+                        className="hero-image absolute inset-0 h-full w-full object-cover contrast-110 saturate-75 will-change-transform"
+                      />
+                      <img
+                        src={profile.photoSecondary || profile.photo} // Ganti dengan path foto kedua kamu
+                        alt={`${profile.name} secondary`}
+                        className="hero-image-secondary absolute inset-0 h-full w-full object-cover contrast-125 saturate-100 opacity-0 will-change-transform"
+                      />
+                    </div>
+
+                    <div className="mt-3 flex items-center justify-between gap-3 font-mono text-[10px] text-circuit-muted">
+                      <span className="truncate">
+                        IC: Zahid Faqih Alim Rabbani
+                      </span>
+
+                      <span className="shrink-0">GPA: 3.74</span>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                {/* END RIGHT PINS — appear at card's end-pin position */}
+                <div className="hero-end-right-pins pointer-events-none absolute left-full top-1/2 -translate-y-1/2 hidden flex-col justify-around gap-6 py-4 pl-1 sm:flex opacity-0">
+                  {rightPins.map((pin) => (
+                    <div
+                      key={`end-${pin.id}`}
+                      className="flex items-center gap-2"
+                    >
+                      <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-circuit-copper" />
+                      <div className="h-px w-6 bg-circuit-copper-dim sm:w-8" />
+                      <div className="leading-tight">
+                        <div className="font-mono text-[10px] text-circuit-copper">
+                          PIN {pin.id}
+                        </div>
+                        <div className="max-w-44 wrap-break-words text-xs text-circuit-muted">
+                          {pin.label}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -323,9 +333,7 @@ export default function Hero() {
                 key={pin.id}
                 className="flex items-center justify-between border-b border-circuit-line/70 py-1.5"
               >
-                <dt className="text-circuit-copper">
-                  PIN {pin.id}
-                </dt>
+                <dt className="text-circuit-copper">PIN {pin.id}</dt>
 
                 <dd className="max-w-[70%] text-right text-circuit-muted">
                   {pin.label}
@@ -336,29 +344,31 @@ export default function Hero() {
         </div>
 
         {/* about */}
-        <section id="about" className="about-section lg:col-start-1 lg:row-start-2 py-20 sm:py-28">
-          <div className="mx-auto max-w-full">
-            <Reveal>
-              <SectionHeading index="// 02 — Register" title="About Me" />
-            </Reveal>
+        <div className="lg:col-start-1 lg:row-start-2">
+          <section id="about" className="about-section py-20 sm:py-28">
+            <div className="about-inner mx-auto max-w-full">
+              <Reveal>
+                <SectionHeading index="// 02 — Register" title="About Me" />
+              </Reveal>
 
-            <div>
-              {profile.about.map((paragraph, i) => (
-                <Reveal key={i} delay={i * 120}>
-                  <div className="panel h-full rounded-lg p-6">
-                    <p className="font-mono text-[10px] text-circuit-copper">
-                      0x{(i + 1).toString().padStart(2, "0")}
-                    </p>
-                    <p className="mt-3 text-sm leading-relaxed text-circuit-muted sm:text-base">
-                      {paragraph}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
+              <div>
+                {profile.about.map((paragraph, i) => (
+                  <Reveal key={i} delay={i * 120}>
+                    <div className="panel h-full rounded-lg p-6">
+                      <p className="font-mono text-[10px] text-circuit-copper">
+                        0x{(i + 1).toString().padStart(2, "0")}
+                      </p>
+                      <p className="mt-3 text-sm leading-relaxed text-circuit-muted sm:text-base">
+                        {paragraph}
+                      </p>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
-    </section >
+    </section>
   );
 }

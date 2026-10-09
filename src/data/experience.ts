@@ -20,7 +20,7 @@ export const experience: ExperienceItem[] = [
     period: "2024",
     type: "organization",
     description:
-      "Joined the software development team, building and maintaining IoT-related tools and projects for the club.",
+      "I started in 2024 as a software engineer on the KSM Internet of Things team, building and maintaining tools for the club's IoT projects.",
   },
   {
     id: "asisten-algpro",
@@ -29,7 +29,7 @@ export const experience: ExperienceItem[] = [
     period: "2024",
     type: "work",
     description:
-      "Assisted teaching and mentoring students through practical sessions of the Algorithms & Programming course.",
+      "The same year, I became a lab assistant for Algorithms & Programming at UPN Veteran Jakarta, guiding students through the practical sessions.",
   },
   {
     id: "ksm-iot-lead",
@@ -38,7 +38,7 @@ export const experience: ExperienceItem[] = [
     period: "2025",
     type: "organization",
     description:
-      "Promoted to lead the software engineering division — overseeing project direction and mentoring junior members.",
+      "A year later I was promoted to head of the software engineering division, setting project direction and mentoring junior members.",
   },
   {
     id: "pln-magang",
@@ -47,7 +47,7 @@ export const experience: ExperienceItem[] = [
     period: "2025",
     type: "work",
     description:
-      "Interned in the protection systems division, working with relay protection schemes and power system safety devices.",
+      "In 2025 I interned in the protection division at PLN, working with relay protection schemes and the devices that keep power systems safe.",
   },
   {
     id: "asisten-mekatronika",
@@ -56,7 +56,7 @@ export const experience: ExperienceItem[] = [
     period: "2025 – 2026",
     type: "work",
     description:
-      "Assisted the Mechatronics lab course, guiding students through embedded systems, sensors, and control practicals.",
+      "From 2025 to 2026 I assisted the Mechatronics lab, guiding students through embedded systems, sensors, and control practicals.",
   },
   {
     id: "heyjong-it-lead",
@@ -65,7 +65,7 @@ export const experience: ExperienceItem[] = [
     period: "2026",
     type: "organization",
     description:
-      "Led the community's IT unit, overseeing its digital tools and technical infrastructure.",
+      "In 2026 I led the IT unit at Heyjong Community, taking care of its digital tools and technical infrastructure.",
   },
   {
     id: "heyjong-eo-lead",
@@ -74,6 +74,6 @@ export const experience: ExperienceItem[] = [
     period: "2026",
     type: "organization",
     description:
-      "Led the event organizing team, planning and running the community's programs and activities.",
+      "I also led the event organizing team, planning and running the community's programs and activities.",
   },
 ];

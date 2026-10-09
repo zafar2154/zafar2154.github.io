@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-label="Water quality monitoring: sensor, fuzzy inference, GPS map">
+  <defs>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#b8cae2" opacity="0.18"/>
+    </pattern>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#10233b"/>
+      <stop offset="1" stop-color="#0a1120"/>
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="1000" fill="url(#bg)"/>
+  <rect width="1000" height="1000" fill="url(#dots)"/>
+
+  <!-- faint board traces for texture -->
+  <g fill="none" stroke="#1e2f47" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 220 H300 L340 260 H640"/>
+    <path d="M1000 800 H700 L660 760 H360"/>
+    <path d="M120 0 V140 L160 180"/>
+    <path d="M880 1000 V860 L840 820"/>
+  </g>
+
+  <!-- main signal path: sensor, fuzzy inference, map -->
+  <g fill="none" stroke="#c9814d" stroke-width="5" stroke-linecap="round">
+    <path d="M250 500 H750"/>
+  </g>
+  <g fill="#0a1120" stroke="#c9814d" stroke-width="5">
+    <circle cx="335" cy="500" r="9"/>
+    <circle cx="415" cy="500" r="9"/>
+    <circle cx="585" cy="500" r="9"/>
+    <circle cx="665" cy="500" r="9"/>
+  </g>
+
+  <!-- 1. sensor: water drop -->
+  <g transform="translate(250 500) scale(0.62)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 -110 C46 -40 70 -4 70 40 A70 70 0 0 1 -70 40 C-70 -4 -46 -40 0 -110Z" fill="#0f1b2e" stroke="#4ade80" stroke-width="8"/>
+    <path d="M-42 48 q21 -18 42 0 t42 0" fill="none" stroke="#4ade80" stroke-width="8"/>
+    <path d="M-42 74 q21 -18 42 0 t42 0" fill="none" stroke="#4ade80" stroke-width="7" opacity="0.45"/>
+  </g>
+
+  <!-- 2. fuzzy inference: membership functions -->
+  <g transform="translate(500 500) scale(0.62)" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <rect x="-170" y="-120" width="340" height="240" rx="14" fill="#0f1b2e" stroke="#1e2f47" stroke-width="6"/>
+    <path d="M-140 80 H140" stroke="#8ea0b8" stroke-width="6"/>
+    <path d="M-140 80 L-70 -70 L0 80" stroke="#4ade80" stroke-width="7"/>
+    <path d="M-70 80 L0 -70 L70 80" stroke="#f2a93b" stroke-width="7"/>
+    <path d="M0 80 L70 -70 L140 80" stroke="#c9814d" stroke-width="7"/>
+    <path d="M28 -96 V80" stroke="#e7ecf3" stroke-width="4" stroke-dasharray="10 10" opacity="0.7"/>
+  </g>
+
+  <!-- 3. GPS map pin with ripples -->
+  <g transform="translate(750 500) scale(0.62)" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="0" cy="96" rx="96" ry="24" fill="none" stroke="#f2a93b" stroke-width="6" opacity="0.45"/>
+    <ellipse cx="0" cy="96" rx="140" ry="36" fill="none" stroke="#f2a93b" stroke-width="5" opacity="0.22"/>
+    <path d="M0 -110 C48 -110 74 -76 74 -40 C74 14 0 88 0 88 C0 88 -74 14 -74 -40 C-74 -76 -48 -110 0 -110Z" fill="#0f1b2e" stroke="#f2a93b" stroke-width="8"/>
+    <circle cx="0" cy="-40" r="24" fill="none" stroke="#f2a93b" stroke-width="8"/>
+  </g>
+</svg>

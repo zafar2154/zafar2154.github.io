@@ -1,10 +1,7 @@
 import { useRef } from 'react';
-import gsap from 'gsap';
-import { TextPlugin } from 'gsap/TextPlugin';
 import { useGSAP } from '@gsap/react';
+import { gsap, prefersReducedMotion } from '../lib/gsap';
 import { profile } from '../data/profile';
-
-gsap.registerPlugin(TextPlugin);
 
 interface TypewriterGSAPProps {
   words?: string[];
@@ -24,18 +21,25 @@ export default function TypewriterGSAP({
   const textRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(() => {
-    if (!textRef.current) return;
+    const el = textRef.current;
+    if (!el) return;
+
+    // Reduced motion: show the first word and leave it still.
+    if (prefersReducedMotion) {
+      el.textContent = words[0] ?? '';
+      return;
+    }
 
     const tl = gsap.timeline({ repeat: -1, delay: startDelay });
 
     words.forEach((word) => {
-      tl.to(textRef.current, {
+      tl.to(el, {
         duration: word.length * typeSpeed,
         text: word,
         ease: 'none',
       })
         .to({}, { duration: delayBetween })
-        .to(textRef.current, {
+        .to(el, {
           duration: word.length * deleteSpeed,
           text: '',
           ease: 'none',
@@ -44,10 +48,14 @@ export default function TypewriterGSAP({
     });
   }, [words, typeSpeed, deleteSpeed, delayBetween, startDelay]);
 
+  // Screen readers get the full list once instead of every typed letter.
   return (
-    <span className="flex h-4 items-center font-mono font-bold text-emerald-500">
-      <span ref={textRef} />
-      <span className="ml-0.5 inline-block h-4 w-0.5 bg-current animate-pulse overflow-hidden" />
+    <span className="flex h-4 items-center font-mono font-bold">
+      <span className="sr-only">{words.join(', ')}</span>
+      <span aria-hidden="true" className="flex items-center">
+        <span ref={textRef} />
+        <span className="ml-0.5 inline-block h-4 w-0.5 animate-pulse bg-current" />
+      </span>
     </span>
   );
 }

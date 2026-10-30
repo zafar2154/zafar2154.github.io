@@ -1,26 +1,21 @@
 import Achievements from "./components/Achievements";
+import Background from "./components/Background";
 import Contact from "./components/Contact";
-import Experience from "./components/Experience";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import Journey from "./components/Journey";
 import Nav from "./components/Nav";
+import Projects from "./components/Projects";
 import SkillsEducation from "./components/SkillsEducation";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
-
-gsap.registerPlugin(ScrollTrigger);
 
 function App() {
-  const pageRef = useRef<HTMLDivElement>(null);
-
   return (
-    <div className="min-h-screen bg-circuit-bg overflow-x-clip  ">
+    <div className="relative isolate min-h-screen bg-circuit-bg overflow-x-clip">
+      <Background />
       <Nav />
-      <main ref={pageRef}>
+      <main>
         <Hero />
-        <Experience />
+        <Projects />
         <Journey />
         <Achievements />
         <SkillsEducation />

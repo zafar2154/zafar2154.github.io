@@ -26,14 +26,16 @@ The output goes to `dist/`.
 
 ```
 src/
-  components/   All UI sections (Nav, Hero, About, Experience, Journey, Achievements, SkillsEducation, Contact, Footer)
+  components/   All UI sections (Background, Nav, Hero + About, Projects, Journey (experience timeline), Achievements, SkillsEducation, Contact, Footer)
   data/         Content lives here — edit these instead of the components
     profile.ts       Name, bio, contact info, social links, nav labels
     projects.ts      Project cards shown in the "Projects" section
     experience.ts    Work + organizational experience shown in the "Experience" timeline
     achievements.ts  Certifications/bootcamps and competition awards
     education.ts     Education timeline + skills lists
-  hooks/        useReveal — scroll-triggered fade-up animation
+  hooks/        useMicroInteractions (tilt, magnetic, press), useMediaQuery
+  animations/   GSAP timelines for the hero intro/About story, plus the typewriter
+  lib/gsap.ts   Shared GSAP + Lenis smooth-scroll setup (plugins, reduced-motion flag, gsapScrollTo)
 public/img/     Photos used across the site
 ```
 

@@ -24,7 +24,7 @@ export const experience: ExperienceItem[] = [
   },
   {
     id: "asisten-algpro",
-    role: "Asisten Laboratorium Algoritma & Pemrograman",
+    role: "Algorithms & Programming Lab Assistant",
     org: "UPN Veteran Jakarta",
     period: "2024",
     type: "work",
@@ -33,7 +33,7 @@ export const experience: ExperienceItem[] = [
   },
   {
     id: "ksm-iot-lead",
-    role: "Ketua Software Engineer",
+    role: "Head of Software Engineering",
     org: "KSM Internet of Things",
     period: "2025",
     type: "organization",
@@ -51,7 +51,7 @@ export const experience: ExperienceItem[] = [
   },
   {
     id: "asisten-mekatronika",
-    role: "Asisten Laboratorium Mekatronika",
+    role: "Mechatronics Lab Assistant",
     org: "UPN Veteran Jakarta",
     period: "2025 – 2026",
     type: "work",
@@ -60,7 +60,7 @@ export const experience: ExperienceItem[] = [
   },
   {
     id: "heyjong-it-lead",
-    role: "Ketua IT Unit",
+    role: "Head of IT Unit",
     org: "Heyjong Community",
     period: "2026",
     type: "organization",
@@ -69,7 +69,7 @@ export const experience: ExperienceItem[] = [
   },
   {
     id: "heyjong-eo-lead",
-    role: "Ketua Event Organizer",
+    role: "Head of Event Organizing",
     org: "Heyjong Community",
     period: "2026",
     type: "organization",

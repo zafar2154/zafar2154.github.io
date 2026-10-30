@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { ExternalLink, X } from "lucide-react";
 import type { Project } from "../data/projects";
-import { gsap, prefersReducedMotion } from "../lib/gsap";
+import { gsap, lenis, prefersReducedMotion } from "../lib/gsap";
 import { usePressFeedback } from "../hooks/useMicroInteractions";
 
 type Delta = { x: number; y: number; scaleX: number; scaleY: number };
@@ -79,16 +79,44 @@ export default function ProjectModal({
     });
   };
 
+  // Keep Tab cycling inside the dialog.
+  const trapFocus = (e: KeyboardEvent) => {
+    const panel = panelRef.current;
+    if (!panel) return;
+    const focusable = panel.querySelectorAll<HTMLElement>("a[href], button:not([disabled])");
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const current = document.activeElement;
+    if (!panel.contains(current)) {
+      e.preventDefault();
+      first.focus();
+    } else if (e.shiftKey && current === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && current === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
   useEffect(() => {
+    // Hand focus back to whatever opened the dialog once it closes.
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") animatedClose();
+      else if (e.key === "Tab") trapFocus(e);
     };
     document.addEventListener("keydown", onKeyDown);
     document.body.style.overflow = "hidden";
+    // Lenis drives the page scroll itself, so it has to be paused too.
+    lenis?.stop();
     closeRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = "";
+      lenis?.start();
+      opener?.focus({ preventScroll: true });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -103,10 +131,12 @@ export default function ProjectModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="project-modal-title"
+      // Let the datasheet column scroll natively while Lenis is stopped.
+      data-lenis-prevent
     >
       <div
         ref={panelRef}
-        className="grid-dots sm:w-[90%] h-[86%] sm:h-[80%] w-full overflow-hidden rounded-xl border border-circuit-copper/50 bg-circuit-panel copper-glow flex flex-col"
+        className="sm:w-[90%] h-[86%] sm:h-[80%] w-full overflow-hidden rounded-xl border border-circuit-copper/50 bg-circuit-panel copper-glow flex flex-col"
       >
         <nav className="shrink-0 z-10 flex items-center justify-between border-b border-circuit-line bg-circuit-panel/95 px-5 py-3 backdrop-blur">
           <span className="font-mono text-[10px] tracking-widest text-circuit-copper">
@@ -122,7 +152,7 @@ export default function ProjectModal({
           </button>
         </nav>
 
-        <main className="min-h-0 flex-1 w-full flex flex-col md:flex-row">
+        <div className="min-h-0 flex-1 w-full flex flex-col md:flex-row">
           <section className="relative w-full md:w-1/2 h-1/2 md:h-full p-4 rounded-lg overflow-hidden">
             <img
               src={project.image}
@@ -136,7 +166,7 @@ export default function ProjectModal({
             )}
           </section>
 
-          <section className="min-h-0 w-full md:w-1/2 flex-1 md:flex-none md:h-full overflow-y-auto text-white p-6 sm:p-4 scrollbar-thumb-circuit-copper">
+          <section className="min-h-0 w-full md:w-1/2 flex-1 md:flex-none md:h-full overflow-y-auto p-6 sm:p-4 [scrollbar-color:var(--color-circuit-copper-dim)_transparent]">
             <div>
               <h3
                 id="project-modal-title"
@@ -202,7 +232,7 @@ export default function ProjectModal({
               )}
             </div>
           </section>
-        </main>
+        </div>
       </div>
     </div>
   );

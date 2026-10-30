@@ -195,7 +195,7 @@ export default function Journey() {
   useTraceTimeline(mobileRef, "(max-width: 767px)");
 
   return (
-    <section id="journey" className="relative overflow-hidden border-t border-circuit-line py-20 sm:py-28">
+    <section id="experience" className="relative overflow-hidden border-t border-circuit-line py-20 sm:py-28">
       <div className="relative mx-auto max-w-5xl px-5 sm:px-8">
         <Reveal>
           <SectionHeading index="// 04 — Trace Path" title="Experience & Organization" />

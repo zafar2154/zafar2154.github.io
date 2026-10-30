@@ -1,7 +1,7 @@
 export const profile = {
   name: 'Zahid Faqih Alim Rabbani',
   shortName: 'Zafar',
-  role: 'Graduate Electrical Engineering',
+  role: 'Electrical Engineering Graduate',
   focus: [
     'Electrical Engineer',
     'IoT Engineer',
@@ -16,10 +16,11 @@ export const profile = {
   phone: '0822-5825-8124',
   email: 'zafar2154.ez@gmail.com',
   status: 'Open to Work',
-  photo: 'img/profile.jpg',
-  photoSecondary: 'img/profileSecondary.jpg',
+  gpa: '3.74',
+  photo: 'img/profile.webp',
+  photoSecondary: 'img/profileSecondary.webp',
   intro:
-    'Graduate student at UPN Veteran Jakarta (since 2022), majoring in Electrical Engineering. Enthusiast in artificial intelligence, IoT, electronics, and control systems — I like learning new things, and I try to build something real out of every idea.',
+    'Electrical Engineering graduate from UPN Veteran Jakarta (2022–2026). Enthusiast in artificial intelligence, IoT, electronics, and control systems — I like learning new things, and I try to build something real out of every idea.',
   about: [
     'I work across C, C++, Python, Kotlin, and JavaScript, along with libraries such as TensorFlow, Keras, pandas, scikit-learn, and NumPy. I also handle basic front-end and back-end work (React, NextJs, FastAPI, Jetpack Compose). My academic background gave me a solid foundation in electronic systems, control theory, IoT, and programming — and I like pairing that theory with hands-on hardware.',
   ],
@@ -33,8 +34,8 @@ export const profile = {
 export const navLinks = [
   { id: 'home', label: 'Home', testPoint: 'TP.01' },
   { id: 'about', label: 'About', testPoint: 'TP.02' },
-  { id: 'experience', label: 'Projects', testPoint: 'TP.03' },
-  { id: 'journey', label: 'Experience', testPoint: 'TP.04' },
+  { id: 'projects', label: 'Projects', testPoint: 'TP.03' },
+  { id: 'experience', label: 'Experience', testPoint: 'TP.04' },
   { id: 'achievements', label: 'Awards', testPoint: 'TP.05' },
   { id: 'skills', label: 'Skills', testPoint: 'TP.06' },
   { id: 'contact', label: 'Contact', testPoint: 'TP.07' },

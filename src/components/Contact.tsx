@@ -6,6 +6,9 @@ import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 import { useTilt } from "../hooks/useMicroInteractions";
 
+/** "https://www.linkedin.com/in/x/" → "linkedin.com/in/x", so the label always matches the link. */
+const displayUrl = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+
 type InfoRowProps = {
   icon: ReactNode;
   label: string;
@@ -25,16 +28,22 @@ function InfoRow({ icon, label, value, href }: InfoRowProps) {
         {icon}
         <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-circuit-led led-dot" />
       </span>
-      <div>
+      <div className="min-w-0">
         <p className="trace-label text-[10px] text-circuit-muted">{label}</p>
-        <p className="font-mono text-sm text-circuit-text">{value}</p>
+        <p className="wrap-anywhere font-mono text-sm text-circuit-text">{value}</p>
       </div>
     </div>
   );
 
   if (href) {
+    const external = href.startsWith("http");
     return (
-      <a href={href} target="_blank" rel="noreferrer" className="block h-full">
+      <a
+        href={href}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noreferrer" : undefined}
+        className="block h-full"
+      >
         {content}
       </a>
     );
@@ -65,17 +74,22 @@ export default function Contact() {
               value={profile.email}
               href={`mailto:${profile.email}`}
             />
-            <InfoRow icon={<Phone size={18} />} label="Phone" value={profile.phone} />
+            <InfoRow
+              icon={<Phone size={18} />}
+              label="Phone"
+              value={profile.phone}
+              href={`tel:${profile.phone.replace(/\D/g, "").replace(/^0/, "+62")}`}
+            />
             <InfoRow
               icon={<LinkedinIcon size={18} />}
               label="LinkedIn"
-              value="linkedin.com/in/zahid-faqih-alim-rabbani/"
+              value={displayUrl(profile.socials.linkedin)}
               href={profile.socials.linkedin}
             />
             <InfoRow
               icon={<GithubIcon size={18} />}
               label="GitHub"
-              value="zafar2154"
+              value={displayUrl(profile.socials.github)}
               href={profile.socials.github}
             />
 
@@ -87,7 +101,7 @@ export default function Contact() {
             <InfoRow
               icon={<InstagramIcon size={18} />}
               label="Instagram"
-              value={"instagram.com/eza_zahid/"}
+              value={displayUrl(profile.socials.instagram)}
               href={profile.socials.instagram}
             />
           </div>

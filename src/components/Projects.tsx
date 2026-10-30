@@ -5,7 +5,7 @@ import ProjectModal from "./ProjectModal";
 import SectionHeading from "./SectionHeading";
 import { useTilt } from "../hooks/useMicroInteractions";
 import { useMediaQuery } from "../hooks/useMediaQuery";
-import { gsap, ScrollTrigger } from "../lib/gsap";
+import { gsap, ScrollTrigger, smoothScrollTo } from "../lib/gsap";
 
 const pad = (n: number) => n.toString().padStart(2, "0");
 
@@ -18,10 +18,9 @@ function ProjectCard({
   project: Project;
   index: number;
   onOpen: (index: number, rect: DOMRect) => void;
-  onFocusCard: (index: number, el: HTMLElement) => void;
+  onFocusCard: (index: number, card: HTMLElement, focused: EventTarget) => void;
 }) {
   const tiltRef = useTilt<HTMLElement>({ max: 3, scale: 1.01, lift: 4 });
-  const open = (el: HTMLElement) => onOpen(index, el.getBoundingClientRect());
 
   const story = [
     ["Problem", project.story.problem],
@@ -29,20 +28,14 @@ function ProjectCard({
     ["Outcome", project.story.outcome],
   ] as const;
 
+  // The whole card is clickable with a mouse; keyboard users reach the
+  // "Details" button (whose click bubbles up here) and the source link.
   return (
     <article
       ref={tiltRef}
-      role="button"
-      tabIndex={0}
-      onClick={(e) => open(e.currentTarget)}
-      onFocus={(e) => onFocusCard(index, e.currentTarget)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          open(e.currentTarget);
-        }
-      }}
-      className="panel flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-lg transition-colors hover:border-circuit-led/60 focus-visible:border-circuit-led/60 md:flex-row"
+      onClick={(e) => onOpen(index, e.currentTarget.getBoundingClientRect())}
+      onFocus={(e) => onFocusCard(index, e.currentTarget, e.target)}
+      className="panel flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-lg transition-colors hover:border-circuit-led/60 has-focus-visible:border-circuit-led/60 md:flex-row"
     >
       <div className="relative h-44 shrink-0 md:h-auto md:w-[42%]">
         <img
@@ -118,10 +111,14 @@ function ProjectCard({
                 Source not published
               </span>
             )}
-            <span className="inline-flex items-center gap-1 font-mono text-[10px] text-circuit-muted">
+            <button
+              type="button"
+              aria-label={`Details: ${project.title}`}
+              className="inline-flex items-center gap-1 font-mono text-[10px] text-circuit-muted transition-colors hover:text-circuit-led"
+            >
               <ScanLine size={12} />
               Details
-            </span>
+            </button>
           </div>
         </div>
       </div>
@@ -129,7 +126,7 @@ function ProjectCard({
   );
 }
 
-export default function Experience() {
+export default function Projects() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
 
@@ -195,28 +192,24 @@ export default function Experience() {
     };
   }, [pinned]);
 
-  // Keyboard users tabbing to an off-screen card: move the page scroll so the
+  // Keyboard users tabbing into an off-screen card: move the page scroll so the
   // track slides that card into view (the track itself has nothing to scroll).
-  const handleFocusCard = (index: number, el: HTMLElement) => {
+  const handleFocusCard = (index: number, card: HTMLElement, focused: EventTarget) => {
     const st = triggerRef.current;
     if (!pinned || !st) return;
-    // Mouse clicks also focus the card; only keyboard focus should move the page.
-    if (!el.matches(":focus-visible")) return;
-    const rect = el.getBoundingClientRect();
+    // Mouse clicks also focus the controls; only keyboard focus should move the page.
+    if (!(focused instanceof HTMLElement) || !focused.matches(":focus-visible")) return;
+    const rect = card.getBoundingClientRect();
     if (rect.left >= 0 && rect.right <= window.innerWidth) return;
     const fraction = projects.length > 1 ? index / (projects.length - 1) : 0;
-    gsap.to(window, {
-      scrollTo: st.start + fraction * (st.end - st.start),
-      duration: 0.6,
-      ease: "power2.inOut",
-    });
+    smoothScrollTo(st.start + fraction * (st.end - st.start), { duration: 0.6 });
   };
 
   const edge = "max(1.25rem, calc((100vw - 72rem) / 2 + 2rem))";
 
   return (
     <section
-      id="experience"
+      id="projects"
       className="relative border-t border-circuit-line bg-circuit-panel/30"
     >
       <div

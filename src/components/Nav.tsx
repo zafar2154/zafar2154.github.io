@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { navLinks } from "../data/profile";
+import { navLinks, profile } from "../data/profile";
 import { gsap, gsapScrollTo, prefersReducedMotion } from "../lib/gsap";
 import { useMagnetic, usePressFeedback } from "../hooks/useMicroInteractions";
 
@@ -11,24 +11,33 @@ export default function Nav() {
   const menuBtnRef = usePressFeedback<HTMLButtonElement>();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
+  // The active link is the last section whose top has passed 45% of the
+  // viewport. Sections nest (About sits inside Home) and some are pinned, so
+  // this reads live positions instead of relying on intersection events.
   useEffect(() => {
-    const sections = navLinks
-      .map((l) => document.getElementById(l.id))
-      .filter((el): el is HTMLElement => Boolean(el));
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.45;
+      let current = navLinks[0].id;
+      for (const link of navLinks) {
+        const el = document.getElementById(link.id);
+        if (el && el.getBoundingClientRect().top <= line) current = link.id;
+      }
+      setActive(current);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActive(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-40% 0px -50% 0px", threshold: 0 }
-    );
-
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
   }, []);
 
   useEffect(() => {
@@ -81,7 +90,7 @@ export default function Nav() {
           <span className="flex h-6 w-6 items-center justify-center rounded-sm border border-circuit-copper/60 text-circuit-copper transition-colors hover:border-circuit-copper hover:bg-circuit-copper/10">
             Z
           </span>
-          ZAFAR
+          {profile.shortName.toUpperCase()}
           <span className="hidden items-center gap-1.5 pl-2 text-[10px] font-medium text-circuit-muted sm:flex">
             <span className="h-1.5 w-1.5 rounded-full bg-circuit-led animate-blink" />
             ONLINE

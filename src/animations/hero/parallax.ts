@@ -1,16 +1,8 @@
 // animations/hero/parallax.ts
 
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger } from '../../lib/gsap';
 
-gsap.registerPlugin(ScrollTrigger);
-
-interface ParallaxRefs {
-  hero: HTMLElement;
-  background: HTMLDivElement;
-}
-
-export function setupParallax({ hero, background }: ParallaxRefs) {
+export function setupParallax(hero: HTMLElement) {
   gsap
     .timeline({
       scrollTrigger: {
@@ -87,31 +79,6 @@ export function setupParallax({ hero, background }: ParallaxRefs) {
       { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' },
       '<',
     );
-
-  const storyStart = () => ScrollTrigger.getById('about-story')?.start ?? 0;
-  const storyEnd = () => ScrollTrigger.getById('about-story')?.end ?? 1;
-
-  gsap.to(background, {
-    y: 200,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: hero,
-      start: 'top top',
-      end: storyStart,
-      scrub: 0.5,
-      invalidateOnRefresh: true,
-    },
-  });
-
-  ScrollTrigger.create({
-    id: 'hero-bg-pin',
-    trigger: '.hero-bg-pin',
-    start: storyStart,
-    end: storyEnd,
-    pin: true,
-    pinSpacing: false,
-    invalidateOnRefresh: true,
-  });
 
   ScrollTrigger.create({
     id: 'hero-card-pin',

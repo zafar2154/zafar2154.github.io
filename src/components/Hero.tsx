@@ -1,49 +1,73 @@
 import { ArrowDown, Mail } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { profile } from "../data/profile";
-import {
-  desktopIntro,
-  mobileIntro,
-  setupParallax,
-  setupImageHover,
-  handleCardMove,
-  handleCardLeave,
-  magneticButton,
-  resetMagneticButton,
-} from "../animations/hero";
+import { desktopIntro, mobileIntro, setupParallax, setupImageHover } from "../animations/hero";
+import { gsap, gsapScrollTo } from "../lib/gsap";
+import { useMagnetic, useTilt } from "../hooks/useMicroInteractions";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 import TypewriterGSAP from "../animations/typewriter";
 
-gsap.registerPlugin(ScrollTrigger);
+type PinData = { id: string; label: string };
 
-const leftPins = [
+const leftPins: PinData[] = [
   { id: "01", label: profile.name },
   { id: "02", label: profile.role },
   { id: "03", label: profile.location },
 ];
 
-const rightPins = [
+const rightPins: PinData[] = [
   { id: "04", label: profile.focus.join(", ") },
   { id: "05", label: profile.email },
   { id: "06", label: profile.status },
 ];
 
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({
-    behavior: "smooth",
-  });
+/** One IC pin: label, lead line and solder dot, with the dot facing the chip. */
+function Pin({
+  pin,
+  side,
+  className = "",
+  labelClassName = "max-w-44",
+}: {
+  pin: PinData;
+  side: "left" | "right";
+  className?: string;
+  labelClassName?: string;
+}) {
+  const label = (
+    <div className="min-w-0 leading-tight">
+      <div className="font-mono text-[10px] text-circuit-copper">PIN {pin.id}</div>
+      <div className={`wrap-anywhere text-xs text-circuit-muted ${labelClassName}`}>
+        {pin.label}
+      </div>
+    </div>
+  );
+  const line = <div className="h-px w-6 shrink-0 bg-circuit-copper-dim sm:w-8 lg:w-4 xl:w-8" />;
+  const dot = <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-circuit-copper" />;
+
+  return side === "left" ? (
+    <div className={`flex items-center justify-end gap-2 text-right ${className}`}>
+      {label}
+      {line}
+      {dot}
+    </div>
+  ) : (
+    <div className={`flex items-center gap-2 ${className}`}>
+      {dot}
+      {line}
+      {label}
+    </div>
+  );
 }
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
-  const backgroundRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useTilt<HTMLDivElement>({ max: 2.5, scale: 1.02, lift: 0 });
+  const contactBtnRef = useMagnetic<HTMLButtonElement>(0.15);
+  const projectsBtnRef = useMagnetic<HTMLButtonElement>(0.15);
 
   useLayoutEffect(() => {
-    if (!heroRef.current || !backgroundRef.current) return;
+    if (!heroRef.current) return;
 
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
@@ -60,7 +84,6 @@ export default function Hero() {
             ".hero-status",
             ".hero-visual-container",
             ".hero-visual-stage",
-            ".hero-bg-pin",
             ".hero-card-pin",
             ".hero-card-intro",
             ".hero-card-breathe",
@@ -78,24 +101,22 @@ export default function Hero() {
         );
       });
 
-      // desktop
+      // desktop — the two-column layout starts at lg, so the pinned About
+      // story only runs there; tablets get the same flow as phones.
       mm.add(
-        "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+        "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
         () => {
           desktopIntro();
 
-          setupParallax({
-            hero: heroRef.current!,
-            background: backgroundRef.current!,
-          });
+          setupParallax(heroRef.current!);
 
           return setupImageHover(cardRef.current!);
         },
       );
 
-      // mobile
+      // mobile + tablet
       mm.add(
-        "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
+        "(max-width: 1023px) and (prefers-reduced-motion: no-preference)",
         () => {
           mobileIntro();
         },
@@ -107,32 +128,15 @@ export default function Hero() {
     }, heroRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [cardRef]);
 
   return (
     <section ref={heroRef} id="home" className="hero-section relative">
-      {/* FRAME — hanya menutupi hero (absolute), TIDAK di-pin */}
-      <div className="pointer-events-none absolute inset-0">
-        {/* LAYER PIN — hanya ScrollTrigger (pin) yang boleh menyentuh elemen ini.
-            Sengaja bukan absolute: spacer ScrollTrigger akan berukuran 0 jika
-            elemen yang di-pin absolute. */}
-        <div className="hero-bg-pin relative h-full w-full">
-          {/* LAYER PARALLAX — hanya parallax (y) */}
-          <div
-            ref={backgroundRef}
-            className="absolute inset-0 grid-dots opacity-70"
-            style={{
-              maskImage:
-                "radial-gradient(ellipse at center, black, transparent 100%)",
-              WebkitMaskImage:
-                "radial-gradient(ellipse at center, black, transparent 75%)",
-            }}
-          />
-        </div>
-      </div>
-
-      <div className="mx-auto grid w-full gap-14 px-5 py-26 sm:px-50 sm:py-28 lg:grid-cols-2 lg:items-start">
-        <div className="lg:col-start-1 lg:row-start-1">
+      <div className="mx-auto grid w-full max-w-7xl gap-14 px-5 py-26 sm:px-8 sm:py-28 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:items-start lg:gap-10 lg:px-10">
+        {/* On tall screens the hero text and the card both centre on the viewport.
+            The card pins at viewport centre, so if it started higher than that
+            the pin would fire on load and drop it away from its pins. */}
+        <div className="lg:col-start-1 lg:row-start-1 lg:flex lg:min-h-[calc(100svh-22.5rem)] lg:flex-col lg:justify-center">
           <p className="hero-label trace-label text-xs text-circuit-copper">
             // S1 — Electrical Engineering
           </p>
@@ -159,9 +163,8 @@ export default function Hero() {
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <button
-              onClick={() => scrollTo("contact")}
-              onMouseMove={(e) => magneticButton(e.currentTarget, e)}
-              onMouseLeave={(e) => resetMagneticButton(e.currentTarget)}
+              ref={contactBtnRef}
+              onClick={() => gsapScrollTo("contact")}
               className="hero-button inline-flex items-center gap-2 rounded-sm bg-circuit-led px-5 py-2.5 font-mono text-xs font-bold tracking-wide text-circuit-bg will-change-transform"
             >
               <Mail size={14} />
@@ -169,9 +172,8 @@ export default function Hero() {
             </button>
 
             <button
-              onClick={() => scrollTo("experience")}
-              onMouseMove={(e) => magneticButton(e.currentTarget, e)}
-              onMouseLeave={(e) => resetMagneticButton(e.currentTarget)}
+              ref={projectsBtnRef}
+              onClick={() => gsapScrollTo("projects")}
               className="hero-button inline-flex items-center gap-2 rounded-sm border border-circuit-copper/60 px-5 py-2.5 font-mono text-xs font-bold tracking-wide text-circuit-copper will-change-transform"
             >
               View projects
@@ -186,53 +188,27 @@ export default function Hero() {
         </div>
 
         <div className="hero-visual-container lg:col-start-2 lg:row-start-1 lg:row-span-2">
-          <div className="hero-visual-stage grid items-center gap-1 sm:grid-cols-[1fr_auto_1fr] pt-15">
+          <div className="hero-visual-stage grid items-center gap-1 pt-15 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:min-h-[calc(100svh-26rem)]">
             {/* LEFT PINS */}
-
             <div className="hero-left-pins hidden flex-col justify-around gap-6 py-4 sm:flex">
               {leftPins.map((pin) => (
-                <div
-                  key={pin.id}
-                  className="hero-left-pin flex items-center justify-end gap-2 text-right"
-                >
-                  <div className="leading-tight">
-                    <div className="font-mono text-[10px] text-circuit-copper">
-                      PIN {pin.id}
-                    </div>
-
-                    <div className="max-w-44 text-xs text-circuit-muted">
-                      {pin.label}
-                    </div>
-                  </div>
-
-                  <div className="h-px w-6 bg-circuit-copper-dim sm:w-8" />
-
-                  <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-circuit-copper" />
-                </div>
+                <Pin key={pin.id} pin={pin} side="left" className="hero-left-pin" />
               ))}
             </div>
+
             {/* LAYER 1 — hanya ScrollTrigger (pin) yang boleh menyentuh elemen ini */}
             <div className="hero-card-pin">
               {/* LAYER 2 — hanya intro animation */}
               <div className="hero-card-intro relative">
                 {/* END LEFT PINS — appear at card's end-pin position */}
-                <div className="hero-end-left-pins pointer-events-none absolute right-full top-1/2 -translate-y-1/2 hidden flex-col justify-around gap-6 py-4 pr-1 sm:flex opacity-0">
+                <div className="hero-end-left-pins pointer-events-none absolute right-full w-max top-1/2 hidden -translate-y-1/2 flex-col justify-around gap-6 py-4 pr-1 opacity-0 sm:flex">
                   {leftPins.map((pin) => (
-                    <div
-                      key={`end-${pin.id}`}
-                      className="flex items-center justify-end gap-2 text-right"
-                    >
-                      <div className="leading-tight">
-                        <div className="font-mono text-[10px] text-circuit-copper">
-                          PIN {pin.id}
-                        </div>
-                        <div className="max-w-44 text-xs text-circuit-muted">
-                          {pin.label}
-                        </div>
-                      </div>
-                      <div className="h-px w-6 bg-circuit-copper-dim sm:w-8" />
-                      <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-circuit-copper" />
-                    </div>
+                    <Pin
+                      key={pin.id}
+                      pin={pin}
+                      side="left"
+                      labelClassName="max-w-24 xl:max-w-36"
+                    />
                   ))}
                 </div>
 
@@ -241,17 +217,7 @@ export default function Hero() {
                   {/* LAYER 4 — hanya hover tilt */}
                   <div
                     ref={cardRef}
-                    onMouseMove={(e) => {
-                      if (cardRef.current) {
-                        handleCardMove(cardRef.current, e);
-                      }
-                    }}
-                    onMouseLeave={() => {
-                      if (cardRef.current) {
-                        handleCardLeave(cardRef.current);
-                      }
-                    }}
-                    className="hero-card relative mx-auto w-64 shrink-0 rounded-xl border border-circuit-line bg-circuit-panel p-3 copper-glow will-change-transform sm:w-72"
+                    className="hero-card relative mx-auto w-64 shrink-0 rounded-xl border border-circuit-line bg-circuit-panel p-3 copper-glow will-change-transform sm:w-72 lg:w-60 xl:w-72"
                     style={{
                       transformStyle: "preserve-3d",
                     }}
@@ -263,67 +229,38 @@ export default function Hero() {
                         className="hero-image absolute inset-0 h-full w-full object-cover contrast-110 saturate-75 will-change-transform"
                       />
                       <img
-                        src={profile.photoSecondary || profile.photo} // Ganti dengan path foto kedua kamu
-                        alt={`${profile.name} secondary`}
+                        src={profile.photoSecondary || profile.photo}
+                        alt=""
                         className="hero-image-secondary absolute inset-0 h-full w-full object-cover contrast-125 saturate-100 opacity-0 will-change-transform"
                       />
                     </div>
 
                     <div className="mt-3 flex items-center justify-between gap-3 font-mono text-[10px] text-circuit-muted">
-                      <span className="truncate">
-                        IC: Zahid Faqih Alim Rabbani
-                      </span>
+                      <span className="truncate">IC: {profile.name}</span>
 
-                      <span className="shrink-0">GPA: 3.74</span>
+                      <span className="shrink-0">GPA: {profile.gpa}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* END RIGHT PINS — appear at card's end-pin position */}
-                <div className="hero-end-right-pins pointer-events-none absolute left-full top-1/2 -translate-y-1/2 hidden flex-col justify-around gap-6 py-4 pl-1 sm:flex opacity-0">
+                <div className="hero-end-right-pins pointer-events-none absolute left-full w-max top-1/2 hidden -translate-y-1/2 flex-col justify-around gap-6 py-4 pl-1 opacity-0 sm:flex">
                   {rightPins.map((pin) => (
-                    <div
-                      key={`end-${pin.id}`}
-                      className="flex items-center gap-2"
-                    >
-                      <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-circuit-copper" />
-                      <div className="h-px w-6 bg-circuit-copper-dim sm:w-8" />
-                      <div className="leading-tight">
-                        <div className="font-mono text-[10px] text-circuit-copper">
-                          PIN {pin.id}
-                        </div>
-                        <div className="max-w-44 wrap-break-words text-xs text-circuit-muted">
-                          {pin.label}
-                        </div>
-                      </div>
-                    </div>
+                    <Pin
+                      key={pin.id}
+                      pin={pin}
+                      side="right"
+                      labelClassName="max-w-24 xl:max-w-36"
+                    />
                   ))}
                 </div>
               </div>
             </div>
 
             {/* RIGHT PINS */}
-
-            <div className="hero-right-pins hidden flex-col justify-around gap-6 py-4 sm:flex overflow-visible">
+            <div className="hero-right-pins hidden flex-col justify-around gap-6 py-4 sm:flex">
               {rightPins.map((pin) => (
-                <div
-                  key={pin.id}
-                  className="hero-right-pin flex items-center gap-2"
-                >
-                  <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-circuit-copper" />
-
-                  <div className="h-px w-6 bg-circuit-copper-dim sm:w-8" />
-
-                  <div className="leading-tight">
-                    <div className="font-mono text-[10px] text-circuit-copper">
-                      PIN {pin.id}
-                    </div>
-
-                    <div className="max-w-44 wrap-break-words text-xs text-circuit-muted">
-                      {pin.label}
-                    </div>
-                  </div>
-                </div>
+                <Pin key={pin.id} pin={pin} side="right" className="hero-right-pin" />
               ))}
             </div>
           </div>

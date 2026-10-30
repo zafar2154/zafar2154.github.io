@@ -1,4 +1,4 @@
-import gsap from 'gsap';
+import { gsap } from '../../lib/gsap';
 
 export function desktopIntro() {
   const tl = gsap.timeline({

@@ -12,13 +12,14 @@ export const profile = {
     'Computer Vision',
   ],
   university: 'Universitas Pembangunan Nasional Veteran Jakarta',
-  location: 'Jakarta Timur, Indonesia',
+  location: 'Jakarta, Indonesia',
   phone: '0822-5825-8124',
   email: 'zafar2154.ez@gmail.com',
   status: 'Open to Work',
   gpa: '3.74',
   photo: 'img/profile.webp',
   photoSecondary: 'img/profileSecondary.webp',
+  cv: 'CV_Zahid_Faqih_Alim_Rabbani.pdf',
   intro:
     'Electrical Engineering graduate from UPN Veteran Jakarta (2022–2026). Enthusiast in artificial intelligence, IoT, electronics, and control systems — I like learning new things, and I try to build something real out of every idea.',
   about: [

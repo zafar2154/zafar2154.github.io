@@ -215,21 +215,34 @@ export default function ProjectModal({
               <span className="font-mono text-[10px] text-circuit-muted">
                 REF: {project.id.toUpperCase()}
               </span>
-              {project.link !== "#" ? (
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-sm bg-circuit-led px-4 py-2 font-mono text-xs font-bold text-circuit-bg transition-transform hover:-translate-y-0.5"
-                >
-                  View source
-                  <ExternalLink size={13} />
-                </a>
-              ) : (
-                <span className="font-mono text-[11px] text-circuit-muted">
-                  Source not published yet
-                </span>
-              )}
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                {project.live && (
+                  <a
+                    href={project.live}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-sm bg-circuit-led px-4 py-2 font-mono text-xs font-bold text-circuit-bg transition-transform hover:-translate-y-0.5"
+                  >
+                    Live site
+                    <ExternalLink size={13} />
+                  </a>
+                )}
+                {project.link !== "#" ? (
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-sm bg-circuit-led px-4 py-2 font-mono text-xs font-bold text-circuit-bg transition-transform hover:-translate-y-0.5"
+                  >
+                    View source
+                    <ExternalLink size={13} />
+                  </a>
+                ) : (
+                  <span className="font-mono text-[11px] text-circuit-muted">
+                    Source not published yet
+                  </span>
+                )}
+              </div>
             </div>
           </section>
         </div>

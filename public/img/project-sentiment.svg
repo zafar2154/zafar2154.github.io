@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-label="Sentiment analysis: reviews, lexicon labels, three sentiment classes">
+  <defs>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#b8cae2" opacity="0.18"/>
+    </pattern>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#10233b"/>
+      <stop offset="1" stop-color="#0a1120"/>
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="1000" fill="url(#bg)"/>
+  <rect width="1000" height="1000" fill="url(#dots)"/>
+
+  <!-- faint board traces for texture -->
+  <g fill="none" stroke="#1e2f47" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 220 H300 L340 260 H640"/>
+    <path d="M1000 800 H700 L660 760 H360"/>
+    <path d="M120 0 V140 L160 180"/>
+    <path d="M880 1000 V860 L840 820"/>
+  </g>
+
+  <!-- main signal path: review, lexicon, classes -->
+  <g fill="none" stroke="#c9814d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M270 500 H570"/>
+    <path d="M570 500 H620 V340 H680"/>
+    <path d="M620 500 H680"/>
+    <path d="M620 500 V660 H680"/>
+  </g>
+  <g fill="#0a1120" stroke="#c9814d" stroke-width="5">
+    <circle cx="350" cy="500" r="9"/>
+    <circle cx="620" cy="500" r="9"/>
+  </g>
+
+  <!-- 1. review: speech bubble with rating stars -->
+  <g transform="translate(230 500) scale(0.62)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-120 -96 H120 A24 24 0 0 1 144 -72 V48 A24 24 0 0 1 120 72 H-34 L-84 120 V72 H-120 A24 24 0 0 1 -144 48 V-72 A24 24 0 0 1 -120 -96Z" fill="#0f1b2e" stroke="#4ade80" stroke-width="8"/>
+    <path d="M-100 -46 H100" stroke="#8ea0b8" stroke-width="10"/>
+    <path d="M-100 -8 H64" stroke="#8ea0b8" stroke-width="10" opacity="0.6"/>
+    <path d="M-100 30 H20" stroke="#8ea0b8" stroke-width="10" opacity="0.35"/>
+  </g>
+
+  <!-- 2. lexicon: word list sorting positive and negative -->
+  <g transform="translate(485 500) scale(0.62)" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <rect x="-120" y="-150" width="240" height="300" rx="14" fill="#0f1b2e" stroke="#1e2f47" stroke-width="6"/>
+    <path d="M-84 -100 H-20" stroke="#4ade80" stroke-width="10"/>
+    <path d="M12 -100 H84" stroke="#f2a93b" stroke-width="10"/>
+    <path d="M-84 -50 H-36" stroke="#4ade80" stroke-width="10" opacity="0.7"/>
+    <path d="M12 -50 H68" stroke="#f2a93b" stroke-width="10" opacity="0.7"/>
+    <path d="M-84 0 H-10" stroke="#4ade80" stroke-width="10" opacity="0.5"/>
+    <path d="M12 0 H52" stroke="#f2a93b" stroke-width="10" opacity="0.5"/>
+    <path d="M-84 50 H-44" stroke="#4ade80" stroke-width="10" opacity="0.32"/>
+    <path d="M12 50 H76" stroke="#f2a93b" stroke-width="10" opacity="0.32"/>
+    <path d="M-84 100 H-24" stroke="#4ade80" stroke-width="10" opacity="0.18"/>
+    <path d="M12 100 H44" stroke="#f2a93b" stroke-width="10" opacity="0.18"/>
+    <path d="M0 -128 V128" stroke="#1e2f47" stroke-width="5"/>
+  </g>
+
+  <!-- 3. the three classes: positive, neutral, negative -->
+  <g fill="#0f1b2e" stroke-width="5" stroke-linecap="round">
+    <g stroke="#4ade80">
+      <circle cx="742" cy="340" r="58"/>
+      <circle cx="722" cy="324" r="3" fill="#4ade80"/>
+      <circle cx="762" cy="324" r="3" fill="#4ade80"/>
+      <path d="M716 352 Q742 382 768 352" fill="none"/>
+    </g>
+    <g stroke="#8ea0b8">
+      <circle cx="742" cy="500" r="58"/>
+      <circle cx="722" cy="484" r="3" fill="#8ea0b8"/>
+      <circle cx="762" cy="484" r="3" fill="#8ea0b8"/>
+      <path d="M718 522 H766" fill="none"/>
+    </g>
+    <g stroke="#f2a93b">
+      <circle cx="742" cy="660" r="58"/>
+      <circle cx="722" cy="644" r="3" fill="#f2a93b"/>
+      <circle cx="762" cy="644" r="3" fill="#f2a93b"/>
+      <path d="M716 688 Q742 658 768 688" fill="none"/>
+    </g>
+  </g>
+</svg>

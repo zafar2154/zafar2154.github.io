@@ -1,4 +1,4 @@
-import { ArrowDown, Mail } from "lucide-react";
+import { FileText, Mail } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import { profile } from "../data/profile";
 import { desktopIntro, mobileIntro, setupParallax, setupImageHover } from "../animations/hero";
@@ -64,7 +64,7 @@ export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
   const cardRef = useTilt<HTMLDivElement>({ max: 2.5, scale: 1.02, lift: 0 });
   const contactBtnRef = useMagnetic<HTMLButtonElement>(0.15);
-  const projectsBtnRef = useMagnetic<HTMLButtonElement>(0.15);
+  const cvBtnRef = useMagnetic<HTMLAnchorElement>(0.15);
 
   useLayoutEffect(() => {
     if (!heroRef.current) return;
@@ -171,14 +171,16 @@ export default function Hero() {
               Get in touch
             </button>
 
-            <button
-              ref={projectsBtnRef}
-              onClick={() => gsapScrollTo("projects")}
+            <a
+              ref={cvBtnRef}
+              href={profile.cv}
+              target="_blank"
+              rel="noreferrer"
               className="hero-button inline-flex items-center gap-2 rounded-sm border border-circuit-copper/60 px-5 py-2.5 font-mono text-xs font-bold tracking-wide text-circuit-copper will-change-transform"
             >
-              View projects
-              <ArrowDown size={14} />
-            </button>
+              View CV
+              <FileText size={14} />
+            </a>
           </div>
 
           <div className="hero-status mt-8 flex items-center gap-2 font-mono text-[11px] text-circuit-muted">

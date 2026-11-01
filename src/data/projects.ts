@@ -14,7 +14,10 @@ export type Project = {
   context: string;
   description: string;
   image: string;
+  /** Source repository, or "#" when it isn't published. */
   link: string;
+  /** Live site, for projects that are deployed. Optional. */
+  live?: string;
   tags: string[];
   badge?: string;
   /** The short Problem → Approach → Outcome story shown on the card. */
@@ -32,53 +35,149 @@ export type Project = {
  */
 export const projects: Project[] = [
   {
-    id: 'asv',
-    title: 'Autonomous Surface Vessel',
-    context: 'KKI ASV 2024',
-    description:
-      'Developed an autonomous surface vessel system designed to perform navigation and mission-based tasks autonomously. The project involved integrating embedded systems, GPS, sensors, motor controllers, and computer vision for real-time perception and navigation. The vessel was designed to follow predefined trajectories, maintain its position and heading, detect objects using computer vision, and communicate telemetry data to a monitoring system. The project required multidisciplinary integration of mechanical, electrical, embedded, control, and software systems.',
-    image: 'img/kki.webp',
-    link: 'https://github.com/zafar2154/kki.git',
-    tags: ['Control System', 'Computer Vision', 'IoT', 'Web Development'],
-    badge: '🏆 Finalist — KKI ASV 2024',
-    story: {
-      problem:
-        'KKI ASV 2024 needed a boat that runs itself, with no one at the helm.',
-      approach:
-        'I integrated GPS, computer vision, sensors, and motor control into one system, so the vessel can locate itself, see its surroundings, and drive its own motors.',
-      outcome:
-        'A vessel that steers and controls itself, much like a self-driving car, and took the team to the final.',
-    },
-    highlights: [
-      'Integrated GPS, sensors, and motor controllers for autonomous navigation and mission-based tasks.',
-      'Used computer vision for real-time object detection and perception.',
-      'Maintained position and heading while following predefined trajectories.',
-      'Streamed telemetry data to a monitoring system for real-time tracking.',
-      'Required multidisciplinary integration across mechanical, electrical, embedded, control, and software systems.',
-    ],
-  },
-  {
     id: 'water-quality-monitoring',
     title: 'Portable Water Quality Monitor',
     context: 'Undergraduate thesis',
     description:
-      'A portable, IoT-based system for monitoring drinking water quality on the spot. The device reads water parameters with onboard sensors, evaluates overall quality with Fuzzy Mamdani logic, and attaches GPS coordinates to every reading so results can be mapped by location.',
+      'A portable, IoT-based system for monitoring drinking water quality on the spot. The ESP32 device measures turbidity, pH, TDS, air temperature, and water temperature, assesses overall quality with Fuzzy Mamdani logic at 95.83% accuracy, and attaches GPS coordinates to every reading so results can be mapped by location. It comes with an Android app, and the thesis is published in the UPNVJ repository.',
     image: 'img/project-water.svg',
-    link: '#',
-    tags: ['IoT', 'Fuzzy Mamdani', 'GPS Mapping', 'Embedded Systems'],
+    link: 'https://github.com/zafar2154/water-quality-system',
+    tags: ['IoT', 'Fuzzy Mamdani', 'ESP32', 'Android', 'GPS Mapping'],
     badge: 'Undergraduate Thesis',
     story: {
       problem:
         'Checking drinking water quality usually means lab tests: slow, and tied to one place.',
       approach:
-        'I built a portable IoT device that reads water parameters on-site, rates quality with Fuzzy Mamdani logic, and tags each reading with GPS coordinates.',
+        'I built a portable ESP32 device that reads water parameters on-site, rates quality with Fuzzy Mamdani logic, and tags each reading with GPS coordinates.',
       outcome:
-        'Readings can be mapped by location, so water quality can be compared across places at a glance.',
+        'Quality ratings reached 95.83% accuracy, and readings can be mapped to compare water quality across places.',
     },
     highlights: [
-      'Portable hardware that measures water parameters directly at the source.',
-      'Fuzzy Mamdani inference turns several sensor readings into one quality rating.',
+      'Portable ESP32 hardware that measures turbidity, pH, TDS, air temperature, and water temperature at the source.',
+      'Fuzzy Mamdani inference turns the sensor readings into one quality rating, with 95.83% accuracy.',
       'GPS-tagged readings enable spatial mapping of water quality.',
+      'Android companion app built with Kotlin and Jetpack Compose.',
+      'Enclosure designed in Fusion 360 and 3D-printed.',
+    ],
+  },
+  {
+    id: 'asv',
+    title: 'Autonomous Surface Vessel',
+    context: 'KKI ASV 2024',
+    description:
+      'Developed an autonomous surface vessel built on NVIDIA Jetson Nano and Arduino controllers. A camera running YOLO and OpenCV handles computer vision, while a Pixhawk and an HC-SR04 ultrasonic sensor handle navigation and obstacle avoidance. A PHP web-based monitoring system tracks the vessel. The project required multidisciplinary integration of mechanical, electrical, embedded, control, and software systems.',
+    image: 'img/kki.webp',
+    link: 'https://github.com/zafar2154/kki-computer-vision',
+    tags: ['Computer Vision', 'YOLO', 'Jetson Nano', 'Web Development'],
+    badge: '🏆 Finalist — KKI ASV 2024',
+    story: {
+      problem:
+        'KKI ASV 2024 needed a boat that runs itself, with no one at the helm.',
+      approach:
+        'I integrated a Jetson Nano, Arduino, Pixhawk, camera, and ultrasonic sensor so the vessel can see, avoid obstacles, and drive itself.',
+      outcome:
+        'A vessel that steers and controls itself, much like a self-driving car, and took the team to the final.',
+    },
+    highlights: [
+      'Built on NVIDIA Jetson Nano and Arduino controllers.',
+      'Implemented YOLO and OpenCV for computer vision.',
+      'Integrated a camera, Pixhawk, and HC-SR04 ultrasonic sensor for navigation and obstacle avoidance.',
+      'Built a PHP web-based monitoring system.',
+      'Required multidisciplinary integration across mechanical, electrical, embedded, control, and software systems.',
+    ],
+  },
+  {
+    id: 'educational-website',
+    title: 'Educational Website for Senior High School',
+    context: 'Web platform for senior high school',
+    description:
+      'A free web platform that gives students one place to study: 360+ books, 210+ exam question sets with answers, and 10 interactive simulations.',
+    image: 'img/project-education.webp',
+    link: 'https://github.com/zafar2154/electro-education',
+    live: 'https://depok.yukbelajar.online/',
+    tags: ['React', 'TypeScript', 'Web Development', 'Education'],
+    story: {
+      problem:
+        'Senior high school students needed one place to find books, exam practice, and lab simulations.',
+      approach:
+        'I developed a platform with a book library, a question bank with answers, and a virtual lab.',
+      outcome:
+        'A live, free site with 360+ books, 210+ question sets, and 10 simulations.',
+    },
+    highlights: [
+      'Book library with 360+ books.',
+      'Question bank with 210+ exam question sets and their answers.',
+      'Virtual lab with 10 interactive simulations.',
+    ],
+  },
+  {
+    id: 'lexicon-sentiment',
+    title: 'Lexicon-Based Sentiment Analysis',
+    context: 'DBS Foundation bootcamp',
+    description:
+      'A sentiment analysis project built on about 50,000 YouTube app reviews scraped from Google Play. A sentiment lexicon labels each review as positive, neutral, or negative, and those labels are used to train and compare three deep learning models.',
+    image: 'img/project-sentiment.svg',
+    link: 'https://github.com/zafar2154/lexicon-based-analisis-sentiment',
+    tags: ['NLP', 'Machine Learning', 'TensorFlow', 'Python'],
+    story: {
+      problem:
+        'A DBS Foundation bootcamp project: sort thousands of app reviews by sentiment without labeling them by hand.',
+      approach:
+        'I scraped about 50,000 Google Play reviews, labeled them with a sentiment lexicon, and compared Word2Vec + LSTM, GloVe + CNN, and TF-IDF + GRU.',
+      outcome:
+        'TF-IDF + GRU came out on top, with 95.7% test accuracy against the lexicon labels.',
+    },
+    highlights: [
+      'Scraped and preprocessed about 50,000 YouTube reviews from Google Play.',
+      'Labeled reviews as positive, neutral, or negative with a sentiment lexicon.',
+      'Compared three models on the lexicon labels: Word2Vec + LSTM (92.7%), GloVe + CNN (93.1%), and TF-IDF + GRU (95.7%).',
+    ],
+  },
+  {
+    id: 'tennis-tournament',
+    title: 'Tennis Tournament Website',
+    context: 'Baseline Tennis Club — Frontend developer',
+    description:
+      'The website for Baseline Tennis Club, with tournaments at its core. Visitors can explore the club, check coaching schedules, and follow events and winners, while operators run tournaments from their own panel. I worked on it as the frontend developer, as part of a team.',
+    image: 'img/project-tennis.webp',
+    link: 'https://github.com/pratamaridho/web-tennis',
+    live: 'https://baseline.riverasolutions.id/',
+    tags: ['React', 'TypeScript', 'GSAP', 'Frontend'],
+    story: {
+      problem:
+        'A tennis club wanted a website that does more than show club info: it should run tournaments too.',
+      approach:
+        'As the frontend developer, I built the public site and the operator panel for events, draws, and schedules with React and TanStack.',
+      outcome:
+        'A live club site that carries real tournaments, such as Baseline Open 2026.',
+    },
+    highlights: [
+      'Set up the frontend foundation with React, TypeScript, TanStack Router, and TanStack Query.',
+      'Built operator tools for players, teams, events, categories, pools, draws, and schedules, plus a live operator panel.',
+      'Worked on the company profile and CMS, and redesigned the homepage from Figma with GSAP animation.',
+    ],
+  },
+  {
+    id: 'rock-paper-scissors',
+    title: 'Rock Paper Scissors Detector',
+    context: 'DBS Foundation bootcamp',
+    description:
+      'A Convolutional Neural Network model that classifies images of rock, paper, and scissors hand gestures, trained with data augmentation and transfer learning to 98% test accuracy. Built as a project in the DBS Foundation bootcamp.',
+    image: 'img/project-rps.jpg',
+    link: 'https://github.com/zafar2154/rock_paper_scissors_detection/blob/main/rockpaperscissor_detection.ipynb',
+    tags: ['Machine Learning', 'CNN', 'Transfer Learning', 'Python'],
+    story: {
+      problem:
+        'A bootcamp project from DBS Foundation: teach a model to tell hand shapes apart.',
+      approach:
+        'I trained a CNN image classifier with data augmentation and transfer learning, using TensorFlow and Keras on Google Colab.',
+      outcome:
+        'A trained model that recognizes the gesture in new hand images, with 98% test accuracy.',
+    },
+    highlights: [
+      'Preprocessed and augmented a labeled image dataset of rock, paper, and scissors hand gestures.',
+      'Trained a CNN with transfer learning using TensorFlow and Keras on Google Colab.',
+      'Reached 98% test accuracy.',
     ],
   },
   {
@@ -86,7 +185,7 @@ export const projects: Project[] = [
     title: 'Simple Automatic Vacuum Cleaner',
     context: 'Fuzzy logic control',
     description:
-      'Arduino-based vacuum cleaner using fuzzy logic: it switches on by itself and sets its suction power from the humidity, the amount of dust, and the distance to the nearest object.',
+      'Arduino-based vacuum cleaner using fuzzy logic: it switches on by itself and sets its suction power from the humidity, the amount of dust, and the distance to the nearest object. I led the project from planning to execution.',
     image: 'img/project-vacuum.jpg',
     link: 'https://github.com/zafar2154/Automatic-Vacuum-Cleaner',
     tags: ['Arduino', 'Fuzzy Logic', 'Control System'],
@@ -100,53 +199,32 @@ export const projects: Project[] = [
     },
     highlights: [
       'Programmed on Arduino using fuzzy logic control instead of simple on/off thresholds.',
+      'Used DHT11 and HC-SR04 sensors, and led the work from planning through programming and hardware assembly.',
       'Suction power scales with humidity, dust level, and obstacle distance.',
       'Switches on automatically, reducing manual operation.',
     ],
   },
   {
-    id: 'rock-paper-scissors',
-    title: 'Rock Paper Scissors Detector',
-    context: 'DBS Foundation bootcamp',
-    description:
-      'A Convolutional Neural Network model that classifies images of rock, paper, and scissors hand gestures. Built as a project in the DBS Foundation bootcamp.',
-    image: 'img/project-rps.jpg',
-    link: 'https://github.com/zafar2154/paper_rock_scissors/blob/main/rockpaperscissor_detection.ipynb',
-    tags: ['Machine Learning', 'CNN', 'Python'],
-    story: {
-      problem:
-        'A bootcamp project from DBS Foundation: teach a model to tell hand shapes apart.',
-      approach:
-        'I built a CNN image classifier in Python that sorts hand images into three classes: rock, paper, and scissors.',
-      outcome:
-        'A trained model that recognizes the gesture in new hand images, checked on images it had never seen.',
-    },
-    highlights: [
-      'Preprocessed and augmented a labeled image dataset of rock, paper, and scissors hand gestures.',
-      'Built and trained a Convolutional Neural Network (CNN) image classifier in Python.',
-      'Evaluated the trained model against unseen validation images.',
-    ],
-  },
-  {
     id: 'pcb-running-led',
     title: 'PCB Running LED',
-    context: 'My first PCB design',
+    context: 'My first PCB design — group project',
     description:
-      'A 7-LED running-light circuit designed and etched as a custom PCB, laid out in Eagle. It was my first project making a PCB.',
-    image: 'img/project-led.jpg',
+      'A 10-LED running-light circuit driven by an NE555 timer and a 4017 decade counter, designed and etched as a custom PCB, laid out in Eagle. It was a group project, and my first time making a PCB.',
+    image: 'img/project-pcb-board.svg',
     link: '#',
-    tags: ['PCB Design', 'Eagle', 'Electronics'],
+    tags: ['PCB Design', 'Eagle', 'NE555', 'Electronics'],
     story: {
       problem:
         'My first PCB: a small circuit to learn the whole path from schematic to a real board.',
       approach:
-        'Seven LEDs wired to light one after another, laid out in Eagle, then etched and assembled by hand.',
+        'An NE555 clocks a 4017 counter that lights ten LEDs one after another. We laid it out in Eagle, then etched and assembled it by hand.',
       outcome:
-        'A working board with seven LEDs running in sequence.',
+        'A working board with ten LEDs running in sequence.',
     },
     highlights: [
-      'Designed the full schematic and PCB layout in Eagle CAD.',
-      'Etched and hand-assembled a 7-LED sequential lighting circuit.',
+      'Laid out the board in Eagle, with all traces routed on a single copper layer.',
+      'NE555 timer clocks a 4017 decade counter, with a trimmer in the timing circuit.',
+      'Etched and hand-assembled the 10-LED sequential lighting circuit.',
       'Focused on trace routing and component placement fundamentals.',
     ],
   },

@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from "react";
 import type { CSSProperties } from "react";
 import { education } from "../data/education";
-import { skills, type Skill } from "../data/skills";
+import { skillGroups, type Skill } from "../data/skills";
 import { skillIcons } from "./skillIcons";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
@@ -37,7 +37,7 @@ function SkillTile({ skill }: { skill: Skill }) {
 
 export default function SkillsEducation() {
   const timelineRef = useRef<HTMLOListElement>(null);
-  const gridRef = useRef<HTMLUListElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   // Education: the trace draws across and the nodes pop on, once.
   useLayoutEffect(() => {
@@ -160,11 +160,18 @@ export default function SkillsEducation() {
           <Reveal>
             <h3 className="trace-label mb-6 text-xs text-circuit-muted">Toolkit</h3>
           </Reveal>
-          <ul ref={gridRef} className="flex flex-wrap gap-3">
-            {skills.map((skill) => (
-              <SkillTile key={skill.key} skill={skill} />
+          <div ref={gridRef} className="grid gap-6">
+            {skillGroups.map((group) => (
+              <div key={group.label} className="grid gap-3 md:grid-cols-[11rem_1fr] md:gap-6">
+                <p className="font-mono text-[11px] text-circuit-copper md:pt-5">{group.label}</p>
+                <ul aria-label={group.label} className="flex flex-wrap gap-3">
+                  {group.skills.map((skill) => (
+                    <SkillTile key={skill.key} skill={skill} />
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </div>
     </section>

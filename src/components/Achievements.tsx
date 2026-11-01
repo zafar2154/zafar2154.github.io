@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef } from "react";
-import { BadgeCheck, GraduationCap, Trophy } from "lucide-react";
+import { BadgeCheck, ExternalLink, GraduationCap, Trophy } from "lucide-react";
 import { achievements, type Achievement } from "../data/achievements";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
@@ -49,7 +49,7 @@ function Featured({ item }: { item: Achievement }) {
         <img
           src={item.image}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-[center_25%]"
           draggable={false}
         />
       )}
@@ -105,6 +105,17 @@ function Badge({ item }: { item: Achievement }) {
         <p className="mt-2 text-xs leading-relaxed text-circuit-muted">
           {item.description}
         </p>
+        {item.link && (
+          <a
+            href={item.link}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold text-circuit-led hover:underline"
+          >
+            View certificate
+            <ExternalLink size={12} />
+          </a>
+        )}
       </div>
     </div>
   );
@@ -121,19 +132,17 @@ export default function Achievements() {
           <SectionHeading index="// 05 — Badges" title="Achievements & Certifications" />
         </Reveal>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-5">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2">
           {featured && (
-            <div className="lg:col-span-3">
+            <div className="sm:col-span-2">
               <Featured item={featured} />
             </div>
           )}
-          <div className={`flex flex-col gap-6 ${featured ? "lg:col-span-2" : "lg:col-span-5"}`}>
-            {rest.map((item, i) => (
-              <Reveal key={item.id} delay={i * 100} className="flex-1">
-                <Badge item={item} />
-              </Reveal>
-            ))}
-          </div>
+          {rest.map((item, i) => (
+            <Reveal key={item.id} delay={i * 100}>
+              <Badge item={item} />
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>

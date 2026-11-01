@@ -9,6 +9,10 @@ import { gsap, ScrollTrigger, smoothScrollTo } from "../lib/gsap";
 
 const pad = (n: number) => n.toString().padStart(2, "0");
 
+// Page scroll needed per pixel the track slides. Below 1 the track moves faster
+// than the wheel, which keeps the pin a sensible length with this many cards.
+const PIN_SCROLL_RATIO = 0.6;
+
 function ProjectCard({
   project,
   index,
@@ -94,23 +98,37 @@ function ProjectCard({
             ))}
           </div>
 
-          <div className="mt-auto flex items-center justify-between border-t border-circuit-line pt-4">
-            {project.link !== "#" ? (
-              <a
-                href={project.link}
-                target="_blank"
-                rel="noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-circuit-led hover:underline"
-              >
-                View source
-                <ExternalLink size={13} />
-              </a>
-            ) : (
-              <span className="font-mono text-[11px] text-circuit-muted">
-                Source not published
-              </span>
-            )}
+          <div className="mt-auto flex items-center justify-between gap-3 border-t border-circuit-line pt-4">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              {project.live && (
+                <a
+                  href={project.live}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-circuit-led hover:underline"
+                >
+                  Live site
+                  <ExternalLink size={13} />
+                </a>
+              )}
+              {project.link !== "#" ? (
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-circuit-led hover:underline"
+                >
+                  View source
+                  <ExternalLink size={13} />
+                </a>
+              ) : (
+                <span className="font-mono text-[11px] text-circuit-muted">
+                  Source not published
+                </span>
+              )}
+            </div>
             <button
               type="button"
               aria-label={`Details: ${project.title}`}
@@ -164,7 +182,7 @@ export default function Projects() {
         scrollTrigger: {
           trigger: pin,
           start: "top top",
-          end: () => `+=${distance()}`,
+          end: () => `+=${distance() * PIN_SCROLL_RATIO}`,
           pin: true,
           scrub: 0.5,
           anticipatePin: 1,
@@ -237,7 +255,7 @@ export default function Projects() {
             {projects.map((project, i) => (
               <div
                 key={project.id}
-                className="w-[84vw] shrink-0 snap-center md:h-[clamp(400px,64vh,540px)] md:w-[min(88vw,920px)]"
+                className="w-[84vw] shrink-0 snap-center md:h-[clamp(430px,64vh,540px)] md:w-[min(88vw,920px)]"
               >
                 <ProjectCard
                   project={project}

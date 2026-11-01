@@ -17,37 +17,28 @@ export const experience: ExperienceItem[] = [
     id: "ksm-iot-staff",
     role: "Staff Software Engineer",
     org: "KSM Internet of Things",
-    period: "2024",
+    period: "2023 – 2024",
     type: "organization",
     description:
-      "I started in 2024 as a software engineer on the KSM Internet of Things team, building and maintaining tools for the club's IoT projects.",
+      "I joined KSM Internet of Things at the end of 2023 as a software engineer, working on the club's web and IoT projects.",
   },
   {
     id: "asisten-algpro",
-    role: "Algorithms & Programming Lab Assistant",
+    role: "Algorithm and Programming Lab Assistant",
     org: "UPN Veteran Jakarta",
     period: "2024",
     type: "work",
     description:
-      "The same year, I became a lab assistant for Algorithms & Programming at UPN Veteran Jakarta, guiding students through the practical sessions.",
+      "In 2024 I became a lab assistant for Algorithm and Programming, designing the learning curriculum and guiding 80+ electrical engineering students through C and Python fundamentals, including Matplotlib and Pandas for data analysis.",
   },
   {
     id: "ksm-iot-lead",
-    role: "Head of Software Engineering",
+    role: "Head of Software Engineering Division",
     org: "KSM Internet of Things",
-    period: "2025",
+    period: "2025 – 2026",
     type: "organization",
     description:
-      "A year later I was promoted to head of the software engineering division, setting project direction and mentoring junior members.",
-  },
-  {
-    id: "pln-magang",
-    role: "Internship — Protection Division",
-    org: "PT PLN (Persero)",
-    period: "2025",
-    type: "work",
-    description:
-      "In 2025 I interned in the protection division at PLN, working with relay protection schemes and the devices that keep power systems safe.",
+      "A year later I became head of the division, leading 5 staff and writing a 10-module syllabus to train them in software and IoT development. At KSM IoT I delivered the club website, the web dashboard for the autonomous surface vessel, and a website with machine learning for an automated urine system.",
   },
   {
     id: "asisten-mekatronika",
@@ -56,24 +47,24 @@ export const experience: ExperienceItem[] = [
     period: "2025 – 2026",
     type: "work",
     description:
-      "From 2025 to 2026 I assisted the Mechatronics lab, guiding students through embedded systems, sensors, and control practicals.",
+      "From 2025 to 2026 I taught PLC fundamentals and ladder diagram programming to 150+ electrical engineering students across 10 practicum sessions per semester, and wrote Module 1 of the practicum curriculum every semester.",
   },
   {
-    id: "heyjong-it-lead",
-    role: "Head of IT Unit",
-    org: "Heyjong Community",
-    period: "2026",
-    type: "organization",
+    id: "pln-magang",
+    role: "Intern, Protection Division",
+    org: "PT PLN (Persero)",
+    period: "2025",
+    type: "work",
     description:
-      "In 2026 I led the IT unit at Heyjong Community, taking care of its digital tools and technical infrastructure.",
+      "In 2025 I interned in the protection division at PLN, studying electrical protection systems, occupational health and safety (K3), and the working environment at PLN.",
   },
   {
     id: "heyjong-eo-lead",
-    role: "Head of Event Organizing",
+    role: "Head of Event Organizer Division",
     org: "Heyjong Community",
     period: "2026",
     type: "organization",
     description:
-      "I also led the event organizing team, planning and running the community's programs and activities.",
+      "In 2026 I led 11 staff at Heyjong Community, running weekly community events and 4 major events, including community service and science teaching for children.",
   },
 ];
